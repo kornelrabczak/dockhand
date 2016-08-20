@@ -3,4 +3,4 @@ Application with dashboard UI for docker containers management: monitoring, scal
 
 ## Running application
 
-mvn spring-boot:run
+    mvn spring-boot:run
