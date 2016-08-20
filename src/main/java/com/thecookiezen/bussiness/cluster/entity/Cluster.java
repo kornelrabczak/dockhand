@@ -17,6 +17,9 @@ public class Cluster implements Serializable {
     private long id;
 
     @NonNull
+    private String dockerApiVersion;
+
+    @NonNull
     private String name;
 
     private Duration healthCheckInterval = Duration.ofSeconds(15);

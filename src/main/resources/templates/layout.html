@@ -18,16 +18,21 @@
 <div class="container body">
     <div class="main_container">
 
-        <div th:replace="fragments/sidebar :: sidebar"></div>
-        <div th:replace="fragments/navigation :: navigation"></div>
+        <div th:replace="fragments/common/sidebar :: sidebar"></div>
+        <div th:replace="fragments/common/navigation :: navigation"></div>
 
         <div class="right_col" role="main">
             <div layout:fragment="content"></div>
         </div>
 
-        <div th:replace="fragments/footer :: footer"></div>
+        <div th:replace="fragments/common/footer :: footer"></div>
     </div>
 </div>
+
+<script src="/webjars/jquery/jquery.min.js"></script>
+<script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+<script src="/js/bootstrap-progressbar.min.js"></script>
+<script src="/js/custom.min.js"></script>
 
 </body>
 </html>
