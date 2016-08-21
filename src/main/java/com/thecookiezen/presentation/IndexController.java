@@ -31,6 +31,11 @@ public class IndexController {
         return "index";
     }
 
+    @RequestMapping("/container")
+    public String container(Model model) {
+        return "container";
+    }
+
     @RequestMapping("/test")
     public String test() {
         return "test";

@@ -1,6 +1,7 @@
 package com.thecookiezen.infrastructure.docker;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.StatsCmd;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.Info;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
@@ -41,5 +42,10 @@ public class DockerFetcher implements ContainerFetcher {
     @Override
     public Info getInfo() {
         return dockerClient.infoCmd().exec();
+    }
+
+    @Override
+    public StatsCmd statsCmd(String containerId) {
+        return dockerClient.statsCmd(containerId);
     }
 }
