@@ -1,39 +1,44 @@
-//var source = new EventSource('/statistics/subscribe//cc8fa66f9da7');
-//
-//source.addEventListener('message', function(e) {
-//   console.log(e.data);
-//});
-//
-//source.addEventListener('open', function(e) {
-//   console.log("Connection was opened.");
-//}, false);
-
 (function() {
-    var canvas = document.getElementById('lineChart'),
-        ctx = canvas.getContext('2d'),
-        startingData = {
-          labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-          datasets: [
-              {
-                  fillColor: "rgba(220,220,220,0.2)",
-                  strokeColor: "rgba(220,220,220,1)",
-                  pointColor: "rgba(220,220,220,1)",
-                  pointStrokeColor: "#fff",
-                  data: [65, 59, 80, 81, 56, 55, 40, 12, 34, 55]
-              }
-          ]
-        },
-        latestLabel = startingData.labels[9];
+   var graphData = [];
 
-    var myLiveChart = new Chart(ctx, {
-        type: "line",
-        data: startingData,
-        animationSteps: 30
+    // initialize graph data
+    for(var i = 0; i < 10; i++) {
+        var graphPoint = {};
+        graphPoint.timestamp = new Date().getTime();
+        graphPoint.memory = 0;
+        graphData.push(graphPoint);
+    }
+
+    var mainGraph = Morris.Line({
+        element: 'myfirstchart',
+        data: graphData,
+        xkey: 'timestamp',
+        ykeys: ['memory'],
+
+        postUnits: ' °c',
+        lineColors: ['#199cef'],
+        goals: [6.0],
+        goalLineColors: ['#FF0000'],
+        labels: ['Temperature'],
+        lineWidth: 3,
+        pointSize: 2,
+        resize: true
     });
 
-    setInterval(function(){
-      myLiveChart.addData([Math.random() * 100], ++latestLabel);
-      myLiveChart.removeData();
-    }, 1000);
+    var source = new EventSource('/statistics/subscribe/cc8fa66f9da7');
 
+    source.addEventListener('message', function(e) {
+       var graphPoint = {};
+       graphPoint.timestamp = new Date().getTime();
+       graphPoint.memory = e.data;
+
+       graphData.splice(0, 1);
+       graphData.push(graphPoint);
+
+       mainGraph.setData(graphData);
+    });
+
+    source.addEventListener('open', function(e) {
+       console.log("Connection was opened.");
+    }, false);
 })();

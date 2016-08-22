@@ -9,13 +9,17 @@
         <div class="x_panel">
             <div class="x_title">
                 <h2>Container statistics</h2>
+                <div class="clearfix"></div>
             </div>
-            <div class="x_content"><iframe class="chartjs-hidden-iframe" style="width: 100%; display: block; border: 0px; height: 0px; margin: 0px; position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px;"></iframe>
-                <canvas id="lineChart" style="width: 602px; height: 301px;" width="602" height="301"></canvas>
+            <div class="x_content">
+                <div id="myfirstchart" style="height: 250px;"></div>
             </div>
         </div>
     </div>
 
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css"/>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
     <script src="/js/statistics.js"></script>
 </div>
 

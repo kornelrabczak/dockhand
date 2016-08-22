@@ -25,7 +25,7 @@ public class StatisticsSSEListener implements ResultCallback<Statistics> {
         this.statisticsProvider = statisticsProvider;
     }
 
-        public SseEmitter createNewEmiter() {
+    public SseEmitter createNewEmiter() {
         SseEmitter sseEmitter = new SseEmitter();
         sseEmitter.onCompletion(() -> this.cleanUp(sseEmitter));
         emitters.add(sseEmitter);
