@@ -11,4 +11,6 @@ public interface ClusterRepository {
     Collection<Cluster> getAll();
 
     Optional<Cluster> getById(long id);
+
+    void remove(long clusterId);
 }
