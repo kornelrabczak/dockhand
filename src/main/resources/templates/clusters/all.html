@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorator="layout">
+
+<head>
+    <script src="/js/chart.min.js"></script>
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <div class="col-md-10">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Clusters list</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>name</th>
+                        <th>docker version</th>
+                        <th>status</th>
+                        <th>actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="cluster : ${clustersList}">
+                        <td th:text="${cluster.id}"></td>
+                        <td th:text="${cluster.name}"></td>
+                        <td th:text="${cluster.dockerApiVersion}"></td>
+                        <td>ok</td>
+                        <td>
+                            <button type="button" class="btn btn-warning">Edit</button>
+                            <form th:action="@{/clusters(clusterId=${cluster.id})}" th:method="delete">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

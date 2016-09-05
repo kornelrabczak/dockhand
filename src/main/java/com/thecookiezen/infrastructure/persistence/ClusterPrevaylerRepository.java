@@ -10,6 +10,7 @@ import pl.setblack.airomem.data.DataRoot;
 import javax.annotation.PostConstruct;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Random;
 
 @Component
 public class ClusterPrevaylerRepository implements ClusterRepository {
@@ -24,6 +25,8 @@ public class ClusterPrevaylerRepository implements ClusterRepository {
 
     @Override
     public void save(final Cluster cluster) {
+        long generatedId = new Random().nextLong();
+        cluster.setId(generatedId);
         controller.execute(view -> view.getDataObject().add(cluster));
     }
 
@@ -35,5 +38,10 @@ public class ClusterPrevaylerRepository implements ClusterRepository {
     @Override
     public Optional<Cluster> getById(long id) {
         return getAll().stream().filter(c -> c.getId() == id).findFirst();
+    }
+
+    @Override
+    public void remove(long clusterId) {
+        controller.execute(view -> view.getDataObject().remove(clusterId));
     }
 }
