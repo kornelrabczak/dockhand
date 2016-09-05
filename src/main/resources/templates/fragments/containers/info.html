@@ -4,101 +4,112 @@
 </head>
 <body>
 
-<div class="row" th:fragment="info">
-    <div class="col-md-12">
-        <div class="x_panel col-md-10">
-            <div class="x_title">
-                <h2>Node information</h2>
-                <div class="clearfix"></div>
-            </div>
-            <div class="x_content">
-                <div class="table-responsive">
-                    <table class="table">
-                        <tbody>
-                        <tr>
-                            <th>Name</th>
-                            <td th:text="${nodeInfo.name}"></td>
-                        </tr>
-                        <tr>
-                            <th>Containers</th>
-                            <td th:text="${nodeInfo.containers}"></td>
-                        </tr>
-                        <tr>
-                            <th>ContainersStopped</th>
-                            <td th:text="${nodeInfo.containersStopped}"></td>
-                        </tr>
-                        <tr>
-                            <th>ContainersPaused</th>
-                            <td th:text="${nodeInfo.containersPaused}"></td>
-                        </tr>
-                        <tr>
-                            <th>ContainersRunning</th>
-                            <td th:text="${nodeInfo.containersRunning}"></td>
-                        </tr>
-                        <tr>
-                            <th>KernelVersion</th>
-                            <td th:text="${nodeInfo.kernelVersion}"></td>
-                        </tr>
-                        <!--<tr>-->
+
+<div th:fragment="info">
+    <section class="content-header">
+        <h1>
+            Node information
+        </h1>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <div class="row">
+            <div class="col-md-10">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Info</h3>
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-bordered">
+                            <tbody>
+                            <tr>
+                                <th>Name</th>
+                                <td th:text="${nodeInfo.name}"></td>
+                            </tr>
+                            <tr>
+                                <th>Containers</th>
+                                <td th:text="${nodeInfo.containers}"></td>
+                            </tr>
+                            <tr>
+                                <th>ContainersStopped</th>
+                                <td th:text="${nodeInfo.containersStopped}"></td>
+                            </tr>
+                            <tr>
+                                <th>ContainersPaused</th>
+                                <td th:text="${nodeInfo.containersPaused}"></td>
+                            </tr>
+                            <tr>
+                                <th>ContainersRunning</th>
+                                <td th:text="${nodeInfo.containersRunning}"></td>
+                            </tr>
+                            <tr>
+                                <th>KernelVersion</th>
+                                <td th:text="${nodeInfo.kernelVersion}"></td>
+                            </tr>
+                            <!--<tr>-->
                             <!--<th>Labels</th>-->
                             <!--<td th:text="${#strings.listJoin(nodeInfo.labels, ',')}"></td>-->
-                        <!--</tr>-->
-                        <tr>
-                            <th>MemTotal</th>
-                            <td th:text="${nodeInfo.memTotal}"></td>
-                        </tr>
-                        <!--<tr>-->
+                            <!--</tr>-->
+                            <tr>
+                                <th>MemTotal</th>
+                                <td th:text="${nodeInfo.memTotal}"></td>
+                            </tr>
+                            <!--<tr>-->
                             <!--<th>cpus</th>-->
                             <!--<td th:text="${nodeInfo.ncpu}"></td>-->
-                        <!--</tr>-->
-                        <tr>
-                            <th>OperatingSystem</th>
-                            <td th:text="${nodeInfo.operatingSystem}"></td>
-                        </tr>
-                        <tr>
-                            <th>ServerVersion</th>
-                            <td th:text="${nodeInfo.serverVersion}"></td>
-                        </tr>
-                        </tbody>
-                    </table>
+                            <!--</tr>-->
+                            <tr>
+                                <th>OperatingSystem</th>
+                                <td th:text="${nodeInfo.operatingSystem}"></td>
+                            </tr>
+                            <tr>
+                                <th>ServerVersion</th>
+                                <td th:text="${nodeInfo.serverVersion}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-9">
-            <div class="x_panel">
-                <div class="x_title">
-                    <h2>Node containers</h2>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="x_content" style="display: block;">
-
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Image</th>
-                            <th>Status</th>
-                            <th>created</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:if="${containers.empty}">
-                            <td colspan="4">No tasks</td>
-                        </tr>
-                        <tr th:each="container : ${containers}">
-                            <td th:text="${container.id}"></td>
-                            <td th:text="${container.image}"></td>
-                            <td th:text="${container.status}"></td>
-                            <td th:text="${#calendars.format(container.created)}"></td>
-                        </tr>
-                        </tbody>
-                    </table>
-
+        <div class="row">
+            <div class="col-md-10">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Node containers</h3>
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Image</th>
+                                <th>Status</th>
+                                <th>created</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:if="${containers.empty}">
+                                <td colspan="4">No tasks</td>
+                            </tr>
+                            <tr th:each="container : ${containers}">
+                                <td th:text="${container.id}"></td>
+                                <td th:text="${container.image}"></td>
+                                <td>
+                                    <span class="label label-danger" th:text="${container.status}"></span>
+                                </td>
+                                <td th:text="${#calendars.format(container.created)}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 </div>
 
 </body>
