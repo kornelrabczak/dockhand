@@ -5,30 +5,30 @@ import pl.setblack.airomem.core.WriteChecker;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Log4j
 public class Storage<T extends Identifiable> implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private List<T> store = new CopyOnWriteArrayList<>();
+    private Map<Long, T> store = new ConcurrentHashMap<>();
 
     public void add(T element) {
         assert WriteChecker.hasPrevalanceContext();
-        this.store.add(element);
+        this.store.put(element.getId(), element);
     }
 
-    public T getById(long id) {
-        return store.stream().filter(e -> e.getId() == id).findFirst().get();
+    public Optional<T> getById(long id) {
+        return Optional.ofNullable(store.get(id));
     }
 
     public Collection<T> getAll() {
-        return this.store;
+        return this.store.values();
     }
 
     public void remove(long clusterId) {
-        T byId = getById(clusterId);
-        store.remove(byId);
+        store.remove(clusterId);
     }
 }

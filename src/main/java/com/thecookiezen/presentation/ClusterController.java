@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,12 @@ public class ClusterController {
     }
 
     @RequestMapping(value="clusters/form", method=RequestMethod.GET)
-    public String showForm(Cluster personForm) {
+    public String showForm(@RequestParam(required = false) Long clusterId, Model model) {
+        if (clusterId != null) {
+            model.addAttribute("cluster", clusterRepository.getById(clusterId).orElse(new Cluster()));
+        } else {
+            model.addAttribute("cluster", new Cluster());
+        }
         return "clusters/form";
     }
 
@@ -38,7 +44,7 @@ public class ClusterController {
     }
 
     @RequestMapping(value = "clusters", method = RequestMethod.POST)
-    public String createCluster(@Valid Cluster cluster, BindingResult bindingResult) {
+    public String saveOrUpdate(@Valid Cluster cluster, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "clusters/form";
         }

@@ -25,8 +25,10 @@ public class ClusterPrevaylerRepository implements ClusterRepository {
 
     @Override
     public void save(final Cluster cluster) {
-        long generatedId = new Random().nextLong();
-        cluster.setId(generatedId);
+        if (cluster.getId() == 0) {
+            cluster.setId(new Random().nextLong());
+        }
+
         controller.execute(view -> view.getDataObject().add(cluster));
     }
 
@@ -37,7 +39,7 @@ public class ClusterPrevaylerRepository implements ClusterRepository {
 
     @Override
     public Optional<Cluster> getById(long id) {
-        return getAll().stream().filter(c -> c.getId() == id).findFirst();
+        return controller.query(view -> view.getById(id));
     }
 
     @Override
