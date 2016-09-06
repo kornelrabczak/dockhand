@@ -6,6 +6,8 @@
 
 [![Sputnik](https://sputnik.ci/conf/badge)](https://sputnik.ci/app#/builds/nikom1337/dockhand)
 
+ [![Coverage Status](https://coveralls.io/repos/nikom1337/dockhand/badge.svg?branch=master&service=github)](https://coveralls.io/github/nikom1337/dockhand?branch=master)
+
 
 Application with dashboard UI for docker containers management: monitoring, scaling, deploying new instances.
 
