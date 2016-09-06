@@ -45,7 +45,7 @@
         <dependency>
             <groupId>com.github.docker-java</groupId>
             <artifactId>docker-java</artifactId>
-            <version>3.0.3</version>
+            <version>3.0.5</version>
         </dependency>
 
         <dependency>
@@ -67,7 +67,7 @@
         <dependency>
             <groupId>pl.setblack</groupId>
             <artifactId>airomem-core</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.5</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
