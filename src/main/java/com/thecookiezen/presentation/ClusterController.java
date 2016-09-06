@@ -2,6 +2,7 @@ package com.thecookiezen.presentation;
 
 import com.thecookiezen.bussiness.cluster.boundary.ClusterRepository;
 import com.thecookiezen.bussiness.cluster.entity.Cluster;
+import com.thecookiezen.bussiness.cluster.entity.DockerHost;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class ClusterController {
         return clusterRepository.getAll();
     }
 
-    @RequestMapping(value="clusters/form", method=RequestMethod.GET)
+    @RequestMapping(value = "clusters/form", method = RequestMethod.GET)
     public String showForm(@RequestParam(required = false) Long clusterId, Model model) {
         if (clusterId != null) {
             model.addAttribute("cluster", clusterRepository.getById(clusterId).orElse(new Cluster()));
@@ -43,8 +44,36 @@ public class ClusterController {
         return "clusters/all";
     }
 
+    @RequestMapping(value = "clusters", method = RequestMethod.DELETE)
+    public String delete(@RequestParam Long clusterId) {
+        clusterRepository.remove(clusterId);
+        return "redirect:/clusters/all";
+    }
+
+    @RequestMapping(value = "clusters/newhost", method = RequestMethod.GET)
+    public String newHostForm(@RequestParam Long clusterId, Model model) {
+        model.addAttribute("clusterId", clusterId);
+        model.addAttribute("host", new DockerHost());
+        return "clusters/addhost";
+    }
+
+    @RequestMapping(value = "clusters", params = {"addHost"}, method = RequestMethod.POST)
+    public String addHost(@Valid DockerHost dockerHost, @RequestParam long clusterId, BindingResult bindingResult) {
+        log.info("addHost");
+
+        if (bindingResult.hasErrors()) {
+            return "clusters/addhost";
+        }
+
+        Cluster cluster = clusterRepository.getById(clusterId).get();
+        cluster.getHosts().add(dockerHost);
+        clusterRepository.save(cluster);
+        return "redirect:/clusters/all";
+    }
+
     @RequestMapping(value = "clusters", method = RequestMethod.POST)
     public String saveOrUpdate(@Valid Cluster cluster, BindingResult bindingResult) {
+        log.info("saveOrUpdate");
         if (bindingResult.hasErrors()) {
             return "clusters/form";
         }
@@ -52,11 +81,4 @@ public class ClusterController {
         clusterRepository.save(cluster);
         return "redirect:/clusters/all";
     }
-
-    @RequestMapping(value = "clusters", method = RequestMethod.DELETE)
-    public String delete(@RequestParam Long clusterId) {
-        clusterRepository.remove(clusterId);
-        return "redirect:/clusters/all";
-    }
-
 }

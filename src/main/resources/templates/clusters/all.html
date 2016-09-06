@@ -22,6 +22,7 @@
                                 <th>name</th>
                                 <th style="width:120px">docker version</th>
                                 <th>status</th>
+                                <th>hosts</th>
                                 <th>actions</th>
                             </tr>
                             </thead>
@@ -31,12 +32,14 @@
                                 <td th:text="${cluster.name}"></td>
                                 <td th:text="${cluster.dockerApiVersion}"></td>
                                 <td>ok</td>
+                                <td th:text="${cluster.hosts.size()}"></td>
                                 <td>
                                     <div class="btn-group">
                                         <a th:href="@{/clusters/form(clusterId=${cluster.id})}" class="btn btn-warning">Edit</a>
                                         <form th:action="@{/clusters(clusterId=${cluster.id})}" th:method="delete" style="float:left;">
                                             <button type="submit" class="btn btn-danger">Delete</button>
                                         </form>
+                                        <a th:href="@{/clusters/newhost(clusterId=${cluster.id})}" class="btn btn-info">Add Host</a>
                                     </div>
                                 </td>
                             </tr>
