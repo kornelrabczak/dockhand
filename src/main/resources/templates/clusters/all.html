@@ -13,38 +13,71 @@
     <section class="content">
         <div class="row">
             <div class="col-md-10">
-                <div class="box">
-                    <div class="box-body no-padding">
-                        <table class="table table-striped">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>name</th>
-                                <th style="width:120px">docker version</th>
-                                <th>status</th>
-                                <th>hosts</th>
-                                <th>actions</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="cluster : ${clustersList}">
-                                <td th:text="${cluster.id}"></td>
-                                <td th:text="${cluster.name}"></td>
-                                <td th:text="${cluster.dockerApiVersion}"></td>
-                                <td>ok</td>
-                                <td th:text="${cluster.hosts.size()}"></td>
-                                <td>
-                                    <div class="btn-group">
+                <div class="box box-solid">
+                    <div class="box-body">
+                        <div class="box-group" id="accordion">
+                            <div class="panel box box-success" th:each="cluster,iterStat : ${clustersList}">
+                                <div class="box-header with-border">
+                                    <h4 class="box-title">
+                                        <a data-toggle="collapse" data-parent="#accordion"
+                                           th:href="${'#collapse_' + iterStat.index}"
+                                           th:text="${cluster.name}"
+                                           aria-expanded="false" class="collapsed">
+                                        </a>
+                                    </h4>
+                                    <div class="btn-group pull-right">
+                                        <a th:href="@{/clusters/newhost(clusterId=${cluster.id})}" class="btn btn-info">Add
+                                            Host</a>
                                         <a th:href="@{/clusters/form(clusterId=${cluster.id})}" class="btn btn-warning">Edit</a>
-                                        <form th:action="@{/clusters(clusterId=${cluster.id})}" th:method="delete" style="float:left;">
+                                        <form th:action="@{/clusters(clusterId=${cluster.id})}" th:method="delete"
+                                              style="float:left;">
                                             <button type="submit" class="btn btn-danger">Delete</button>
                                         </form>
-                                        <a th:href="@{/clusters/newhost(clusterId=${cluster.id})}" class="btn btn-info">Add Host</a>
                                     </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                                </div>
+                                <div th:id="${'collapse_' + iterStat.index}" class="panel-collapse collapse" aria-expanded="true">
+                                    <div class="box-body">
+                                        <dl class="dl-horizontal">
+                                            <dt>ID</dt>
+                                            <dd th:text="${cluster.id}"></dd>
+                                            <dt>Docker version</dt>
+                                            <dd th:text="${cluster.dockerApiVersion}"></dd>
+                                            <dt>Status</dt>
+                                            <dd>Ok</dd>
+                                            <dt>Hosts count</dt>
+                                            <dd th:text="${cluster.hosts.size()}"></dd>
+                                        </dl>
+                                    </div>
+
+                                    <div class="box-body no-padding">
+                                        <div class="box-header">
+                                            <h3 class="box-title">Hosts list</h3>
+                                        </div>
+                                        <table class="table table-condensed">
+                                            <tbody><tr>
+                                                <th style="width: 10px">#</th>
+                                                <th>Name</th>
+                                                <th>Url</th>
+                                                <th>Host space</th>
+                                                <th style="width: 40px">Status</th>
+                                            </tr>
+                                            <tr th:each="host : ${cluster.hosts}">
+                                                <td th:text="${host.id}"></td>
+                                                <td th:text="${host.name}"></td>
+                                                <td th:text="${host.dockerDaemonUrl}"></td>
+                                                <td>
+                                                    <div class="progress progress-xs">
+                                                        <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
+                                                    </div>
+                                                </td>
+                                                <td><span class="badge bg-red">Error</span></td>
+                                            </tr>
+                                            </tbody></table>
+                                        <div class="box-footer clearfix"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

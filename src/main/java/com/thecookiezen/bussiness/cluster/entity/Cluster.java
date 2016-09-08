@@ -23,6 +23,8 @@ public class Cluster implements Identifiable, Serializable {
     @Size(min = 5, max = 30)
     private String name;
 
+    private int maxContainers;
+
     @NotNull
     private Duration healthCheckInterval = Duration.ofSeconds(15);
 
