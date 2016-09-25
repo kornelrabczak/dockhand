@@ -60,9 +60,13 @@
                                                 <th>Url</th>
                                                 <th>Host space</th>
                                                 <th style="width: 40px">Status</th>
+                                                <th style="width: 40px">Action</th>
                                             </tr>
                                             <tr th:each="host : ${cluster.hosts}">
-                                                <td th:text="${host.id}"></td>
+                                                <td>
+                                                    <a th:href="@{/clusters/node(clusterId=${cluster.id},nodeId=${host.id})}"
+                                                       th:text="${host.id}"></a>
+                                                </td>
                                                 <td th:text="${host.name}"></td>
                                                 <td th:text="${host.dockerDaemonUrl}"></td>
                                                 <td>
@@ -71,6 +75,11 @@
                                                     </div>
                                                 </td>
                                                 <td><span class="badge bg-red">Error</span></td>
+                                                <td>
+                                                    <form th:action="@{/clusters/node(clusterId=${cluster.id},hostId=${host.id})}" th:method="delete">
+                                                        <button type="submit" class="btn btn-danger"><i class="fa fa-trash-o"></i> Delete</button>
+                                                    </form>
+                                                </td>
                                             </tr>
                                             </tbody></table>
                                         <div class="box-footer clearfix"></div>

@@ -6,7 +6,6 @@ import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.Info;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
-import com.github.dockerjava.core.DockerClientConfig;
 import com.thecookiezen.bussiness.containers.boundary.ContainerFetcher;
 import org.springframework.stereotype.Component;
 
@@ -22,11 +21,15 @@ public class DockerFetcher implements ContainerFetcher {
 
     @PostConstruct
     void init() {
-        DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
-                .withDockerHost("tcp://0.0.0.0:2376")
-                .withApiVersion("1.24")
+        dockerClient = getDockerClient("tcp://0.0.0.0:2375", "1.24");
+    }
+
+    public DockerClient getDockerClient(final String dockerHost, final String apiVersion) {
+        DefaultDockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder()
+                .withDockerHost(dockerHost)
+                .withApiVersion(apiVersion)
                 .build();
-        dockerClient = DockerClientBuilder.getInstance(config).build();
+        return DockerClientBuilder.getInstance(config).build();
     }
 
     @PreDestroy
@@ -35,12 +38,12 @@ public class DockerFetcher implements ContainerFetcher {
     }
 
     @Override
-    public Collection<Container> list() {
+    public Collection<Container> list(DockerClient dockerClient) {
         return dockerClient.listContainersCmd().withShowAll(true).exec();
     }
 
     @Override
-    public Info getInfo() {
+    public Info getInfo(DockerClient dockerClient) {
         return dockerClient.infoCmd().exec();
     }
 

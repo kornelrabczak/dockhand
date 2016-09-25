@@ -71,6 +71,14 @@ public class ClusterController {
         return "redirect:/clusters/all";
     }
 
+    @RequestMapping(value = "clusters/node", method = RequestMethod.DELETE)
+    public String deleteHost(@RequestParam Long clusterId, @RequestParam Long hostId) {
+        Cluster cluster = clusterRepository.getById(clusterId).get();
+        cluster.getHosts().removeIf(h -> h.getId() == hostId);
+        clusterRepository.save(cluster);
+        return "redirect:/clusters/all";
+    }
+
     @RequestMapping(value = "clusters", method = RequestMethod.POST)
     public String saveOrUpdate(@Valid Cluster cluster, BindingResult bindingResult) {
         log.info("saveOrUpdate");
