@@ -6,13 +6,13 @@ import lombok.NonNull;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Random;
 
 @Data
-@NoArgsConstructor
 public class DockerHost implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private long id;
+    private final long id;
 
     @NonNull
     private String name;
@@ -20,5 +20,9 @@ public class DockerHost implements Serializable {
     @NonNull
     private String dockerDaemonUrl;
 
-    private Instant created = Instant.now();
+    private final Instant created = Instant.now();
+
+    public DockerHost() {
+        id = new Random().nextLong();
+    }
 }
