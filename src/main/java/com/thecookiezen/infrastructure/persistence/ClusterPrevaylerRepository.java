@@ -27,6 +27,11 @@ public class ClusterPrevaylerRepository implements ClusterRepository {
     public void save(final Cluster cluster) {
         if (cluster.getId() == 0) {
             cluster.setId(new Random().nextLong());
+        } else {
+            Optional<Cluster> byId = getById(cluster.getId());
+            if (byId.isPresent()) {
+                cluster.setHosts(byId.get().getHosts());
+            }
         }
 
         controller.execute(view -> view.getDataObject().add(cluster));
