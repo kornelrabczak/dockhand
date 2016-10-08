@@ -1,6 +1,6 @@
 package com.thecookiezen.presentation;
 
-import com.thecookiezen.bussiness.cluster.boundary.ClusterRepository;
+import com.thecookiezen.bussiness.cluster.control.ClusterRepository;
 import com.thecookiezen.bussiness.cluster.entity.Cluster;
 import com.thecookiezen.bussiness.cluster.entity.DockerHost;
 import lombok.AllArgsConstructor;

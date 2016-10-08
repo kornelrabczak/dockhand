@@ -1,4 +1,4 @@
-package com.thecookiezen.bussiness.cluster.boundary;
+package com.thecookiezen.bussiness.cluster.control;
 
 import com.thecookiezen.bussiness.cluster.entity.Cluster;
 

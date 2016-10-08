@@ -3,7 +3,7 @@ package com.thecookiezen.presentation;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.Info;
-import com.thecookiezen.bussiness.cluster.boundary.ClusterRepository;
+import com.thecookiezen.bussiness.cluster.control.ClusterRepository;
 import com.thecookiezen.bussiness.cluster.entity.Cluster;
 import com.thecookiezen.bussiness.cluster.entity.DockerHost;
 import com.thecookiezen.bussiness.containers.boundary.ContainerFetcher;
