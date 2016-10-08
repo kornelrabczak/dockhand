@@ -1,6 +1,6 @@
 package com.thecookiezen.infrastructure.persistence;
 
-import com.thecookiezen.bussiness.cluster.boundary.ClusterRepository;
+import com.thecookiezen.bussiness.cluster.control.ClusterRepository;
 import com.thecookiezen.bussiness.cluster.entity.Cluster;
 import org.springframework.stereotype.Component;
 import pl.setblack.airomem.core.PersistenceController;
