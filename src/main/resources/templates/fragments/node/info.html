@@ -8,7 +8,7 @@
 <div th:fragment="info">
     <section class="content-header">
         <h1>
-            <a th:href="@{/clusters/all}" th:text="${cluster.name}"></a>
+            <a th:href="@{/clusters/all}" th:text="${clusterName}"></a>
         </h1>
     </section>
 
@@ -21,7 +21,7 @@
                     <div class="box-header with-border">
                         <h3 th:text="${node.name}" class="box-title"></h3>
                     </div>
-                    <div class="box-body">
+                    <div class="box-body" th:with="nodeInfo=${node.info}">
                         <table class="table table-bordered">
                             <tbody>
                             <tr>
@@ -92,10 +92,10 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:if="${containers.empty}">
+                            <tr th:if="${node.containers.empty}">
                                 <td colspan="4">No tasks</td>
                             </tr>
-                            <tr th:each="container : ${containers}">
+                            <tr th:each="container : ${node.containers}">
                                 <td th:text="${container.id}"></td>
                                 <td th:text="${container.image}"></td>
                                 <td>

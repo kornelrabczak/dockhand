@@ -3,7 +3,6 @@ package com.thecookiezen.infrastructure.docker;
 import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.model.Statistics;
 import com.google.common.collect.Lists;
-import com.thecookiezen.bussiness.cluster.boundary.StatisticsProvider;
 import lombok.extern.log4j.Log4j;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -17,12 +16,10 @@ public class StatisticsSSEListener implements ResultCallback<Statistics> {
 
     private final List<SseEmitter> emitters = Lists.newCopyOnWriteArrayList();
     private final String containerId;
-    private final StatisticsProvider statisticsProvider;
     private final AtomicBoolean isWorking = new AtomicBoolean(false);
 
-    public StatisticsSSEListener(String containerId, StatisticsProvider statisticsProvider) {
+    public StatisticsSSEListener(String containerId) {
         this.containerId = containerId;
-        this.statisticsProvider = statisticsProvider;
     }
 
     public SseEmitter createNewEmiter() {
@@ -30,7 +27,7 @@ public class StatisticsSSEListener implements ResultCallback<Statistics> {
         sseEmitter.onCompletion(() -> this.cleanUp(sseEmitter));
         emitters.add(sseEmitter);
         if (!isWorking.get()) {
-            statisticsProvider.getStats(containerId, this);
+//            statisticsProvider.getStats(containerId, this);
         }
         return sseEmitter;
     }
