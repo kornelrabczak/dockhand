@@ -12,4 +12,6 @@ public interface ContainerFetcher {
     Info getInfo();
 
     StatsCmd statsCmd(String containerId);
+
+    boolean isContainerRunning(String containerId);
 }

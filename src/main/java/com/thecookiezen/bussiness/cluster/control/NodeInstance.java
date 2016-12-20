@@ -1,6 +1,7 @@
 package com.thecookiezen.bussiness.cluster.control;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.command.StatsCmd;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.Info;
@@ -29,5 +30,18 @@ public class NodeInstance implements ContainerFetcher {
     @Override
     public StatsCmd statsCmd(String containerId) {
         return dockerClient.statsCmd(containerId);
+    }
+
+    @Override
+    public boolean isContainerRunning(String containerId) {
+        try {
+            InspectContainerResponse exec = dockerClient.inspectContainerCmd(containerId).exec();
+            if (exec == null) {
+                return false;
+            }
+            return exec.getState().getRunning();
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

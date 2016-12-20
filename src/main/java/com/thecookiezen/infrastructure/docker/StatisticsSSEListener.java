@@ -3,6 +3,7 @@ package com.thecookiezen.infrastructure.docker;
 import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.model.Statistics;
 import com.google.common.collect.Lists;
+import com.thecookiezen.bussiness.cluster.boundary.ContainerFetcher;
 import lombok.extern.log4j.Log4j;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -17,49 +18,51 @@ public class StatisticsSSEListener implements ResultCallback<Statistics> {
     private final List<SseEmitter> emitters = Lists.newCopyOnWriteArrayList();
     private final String containerId;
     private final AtomicBoolean isWorking = new AtomicBoolean(false);
+    private final ContainerFetcher nodeInstance;
+    private Closeable closeable;
 
-    public StatisticsSSEListener(String containerId) {
+    public StatisticsSSEListener(String containerId, ContainerFetcher nodeInstance) {
         this.containerId = containerId;
+        this.nodeInstance = nodeInstance;
     }
 
     public SseEmitter createNewEmiter() {
+        if (!nodeInstance.isContainerRunning(containerId)) {
+            throw new IllegalStateException("Container not running.");
+        }
+
         SseEmitter sseEmitter = new SseEmitter();
-        sseEmitter.onCompletion(() -> this.cleanUp(sseEmitter));
         emitters.add(sseEmitter);
-        if (!isWorking.get()) {
-//            statisticsProvider.getStats(containerId, this);
+        if (isWorking.compareAndSet(false, true)) {
+            nodeInstance.statsCmd(containerId).exec(this);
         }
         return sseEmitter;
-    }
-
-    private void cleanUp(SseEmitter sseEmitter) {
-        emitters.remove(sseEmitter);
-        if (emitters.isEmpty()) {
-            try {
-                close();
-                isWorking.set(false);
-            } catch (IOException e) {
-                log.error("Error during closing statistics events stream.", e);
-            }
-        }
     }
 
     @Override
     public void onStart(Closeable closeable) {
         log.info("Statistics events stream started.");
-        isWorking.set(true);
+        this.closeable = closeable;
     }
 
     @Override
     public void onNext(Statistics statistics) {
-        emitters.forEach(e -> {
+        emitters.removeIf(e -> {
             try {
                 e.send(statistics.getMemoryStats().get("usage"));
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 log.error("Error during processing statistics event.", ex);
-                e.completeWithError(ex);
+                return true;
             }
+            return false;
         });
+
+        if (emitters.isEmpty())
+            try {
+                close();
+            } catch (IOException e) {
+                log.error("Error during closing stream.", e);
+            }
     }
 
     @Override
@@ -77,5 +80,6 @@ public class StatisticsSSEListener implements ResultCallback<Statistics> {
     public void close() throws IOException {
         log.info("Statistics events stream closed.");
         isWorking.set(false);
+        closeable.close();
     }
 }

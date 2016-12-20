@@ -3,6 +3,7 @@ package com.thecookiezen.bussiness.cluster.control;
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
+import com.thecookiezen.bussiness.cluster.boundary.ContainerFetcher;
 import com.thecookiezen.bussiness.cluster.entity.Cluster;
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
@@ -47,5 +48,9 @@ public class ClusterInstance {
                 log.error("Error occurred during closing docker client for node [" + node.getName() + "]");
             }
         });
+    }
+
+    public ContainerFetcher getNode(long nodeId) {
+        return nodes.get(nodeId);
     }
 }
