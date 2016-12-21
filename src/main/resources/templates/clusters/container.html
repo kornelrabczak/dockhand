@@ -8,13 +8,12 @@
 
     <section class="content-header">
         <h1>
-            <a th:href="@{/clusters/all}" th:text="${clusterName}"></a>
+            <a th:href="@{/cluster/{clusterId}/node/{nodeId}(clusterId=${clusterId}, nodeId=${node.id})}" th:text="${node.name}"></a>
         </h1>
     </section>
 
     <section class="content">
-        <div th:replace="fragments/node/info :: info"></div>
-        <div th:replace="fragments/node/containersList :: containersList"></div>
+        <div th:replace="fragments/containers/statistics :: statistics"></div>
     </section>
 </div>
 

@@ -64,7 +64,8 @@
                                             </tr>
                                             <tr th:each="host : ${cluster.hosts}">
                                                 <td>
-                                                    <a th:href="@{/clusters/node(clusterId=${cluster.id},nodeId=${host.id})}"
+                                                    <a th:href="@{/cluster/{clusterId}/node/{nodeId}
+                                                    (clusterId=${cluster.id},nodeId=${host.id})}"
                                                        th:text="${host.id}"></a>
                                                 </td>
                                                 <td th:text="${host.name}"></td>

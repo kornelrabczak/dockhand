@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+
+<div th:fragment="containersList">
+    <div class="row">
+        <div class="col-md-10">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Node containers</h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Image</th>
+                            <th>Status</th>
+                            <th>created</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${node.containers.empty}">
+                            <td colspan="4">No tasks</td>
+                        </tr>
+                        <tr th:each="container : ${node.containers}">
+                            <td>
+                                <a th:href="@{/cluster/{clusterId}/node/{nodeId}/container/{containerId}
+                                (clusterId=${clusterId},nodeId=${node.id},containerId=${container.id})}"
+                                   th:text="${container.id}"></a>
+                            </td>
+                            <td th:text="${container.image}"></td>
+                            <td>
+                                <span class="label label-danger" th:text="${container.status}"></span>
+                            </td>
+                            <td th:text="${#calendars.format(container.created)}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -24,7 +24,7 @@ public class ClusterInstance {
         this.cluster = cluster;
         cluster.getHosts().forEach(h -> {
             DockerClient dockerClient = getDockerClient(h.getDockerDaemonUrl(), cluster.getDockerApiVersion());
-            nodes.put(h.getId(), new NodeInstance(h.getName(), dockerClient));
+            nodes.put(h.getId(), new NodeInstance(h.getId(), h.getName(), dockerClient));
         });
     }
 

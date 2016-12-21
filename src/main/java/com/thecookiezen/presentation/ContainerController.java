@@ -14,18 +14,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @Log4j
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class NodeController {
+public class ContainerController {
 
     ClustersManager clustersManager;
 
-    @RequestMapping("/cluster/{clusterId}/node/{nodeId}")
-    public String node(@PathVariable("clusterId") long clusterId, @PathVariable("nodeId") long nodeId, Model model) {
+    @RequestMapping("/cluster/{clusterId}/node/{nodeId}/container/{containerId}")
+    public String node(@PathVariable("clusterId") long clusterId, @PathVariable("nodeId") long nodeId,
+                       @PathVariable("containerId") String containerId, Model model) {
         ClusterInstance instance = clustersManager.getInstance(clusterId);
         NodeInstance nodeInstance = instance.getNodes().get(nodeId);
-        model.addAttribute("clusterName", instance.getName());
         model.addAttribute("clusterId", clusterId);
         model.addAttribute("node", nodeInstance);
-        return "clusters/node";
+        model.addAttribute("container", nodeInstance.getContainer(containerId));
+        return "clusters/container";
     }
-
 }

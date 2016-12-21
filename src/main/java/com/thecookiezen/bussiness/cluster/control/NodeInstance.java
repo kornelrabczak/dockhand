@@ -13,6 +13,8 @@ import java.util.Collection;
 @Data
 public class NodeInstance implements ContainerFetcher {
 
+    private final long id;
+
     private final String name;
 
     private final DockerClient dockerClient;
@@ -25,6 +27,10 @@ public class NodeInstance implements ContainerFetcher {
     @Override
     public Info getInfo() {
         return dockerClient.infoCmd().exec();
+    }
+
+    public InspectContainerResponse getContainer(String containerId) {
+        return dockerClient.inspectContainerCmd(containerId).exec();
     }
 
     @Override
