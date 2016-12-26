@@ -9,20 +9,67 @@
         <div class="col-md-4">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Container statistics</h3>
+                    <h3 class="box-title">Received bytes</h3>
                 </div>
                 <div class="box-body">
                     <div class="x_content">
-                        <div id="visualization"></div>
+                        <div id="visualization1"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Sent bytes</h3>
+                </div>
+                <div class="box-body">
+                    <div class="x_content">
+                        <div id="visualization2"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-md-4">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Memory usage</h3>
+                </div>
+                <div class="box-body">
+                    <div class="x_content">
+                        <div id="visualization3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">CPU total usage</h3>
+                </div>
+                <div class="box-body">
+                    <div class="x_content">
+                        <div id="visualization4"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="/js/vis.min.js"></script>
     <link href="/css/vis.min.css" rel="stylesheet" type="text/css"/>
     <script src="/js/statistics.js"></script>
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+        var eventBus = new StatisticsEventBus("[[${clusterId}]]", "[[${node.id}]]", [[${container.id}]]);
+        eventBus.addListener("rx_bytes", new StatisticChart("visualization1"));
+        eventBus.addListener("tx_bytes", new StatisticChart("visualization2"));
+        eventBus.addListener("memoryUsage", new StatisticChart("visualization3"));
+        eventBus.addListener("cpuTotalUsage", new StatisticChart("visualization4"));
+    /*]]>*/
+    </script>
 </div>
 
 </body>

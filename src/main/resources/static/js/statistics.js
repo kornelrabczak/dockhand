@@ -1,9 +1,34 @@
-(function() {
-    var container = document.getElementById('visualization');
+var StatisticsEventBus = StatisticsEventBus || {};
 
-    var dataset = new vis.DataSet();
+var StatisticsEventBus = function(clusterId, nodeId, containerId) {
+    this.source = new EventSource("/statistics/subscribe/" + clusterId + "/" + nodeId + "/" + containerId);
+    this.source.eventBus = this;
+    this.source.onmessage = this.process;
+    this.source.onopen = function(e) {
+       console.log("Connection was opened.");
+    };
 
-    var options = {
+    this.subscriptions = [];
+};
+
+StatisticsEventBus.prototype = {
+    addListener: function(type, listener) {
+        this.subscriptions[type] = listener;
+    },
+    process: function(event) {
+        var data = JSON.parse(event.data);
+
+        for (var key in this.eventBus.subscriptions) {
+            var listener = this.eventBus.subscriptions[key];
+            listener.update(data[key]);
+        }
+    }
+};
+
+var StatisticChart = function (element) {
+    this.element = document.getElementById(element);
+    this.dataSet = new vis.DataSet();
+    this.options = {
         drawPoints: false,
         moveable: false,
         showCurrentTime: false,
@@ -11,42 +36,37 @@
         end: vis.moment(),
         shaded: {
           orientation: 'bottom'
-        }
+        },
+        graphHeight: 250
     };
-    var graph2d = new vis.Graph2d(container, dataset, options);
+    this.graph2d = new vis.Graph2d(this.element, this.dataSet, this.options);
+    this.refresh();
+};
 
-    function renderStep() {
+StatisticChart.prototype = {
+    refresh: function() {
         var now = vis.moment();
-        var range = graph2d.getWindow();
+        var range = this.graph2d.getWindow();
         var interval = range.end - range.start;
 
-        graph2d.setWindow(now - interval, now, {animation: false});
-        requestAnimationFrame(renderStep);
-    }
-    requestAnimationFrame(renderStep);
-
-    var source = new EventSource('/statistics/subscribe/-6284378544578729124/-939424790988208844/24614648d3003d75424e38eee76cfa3f7ea303162fcd9727a640d5a8b2e2df1f');
-
-    source.onmessage = function(event) {
-        console.log(event);
-        console.log(dataset);
+        this.graph2d.setWindow(now - interval, now, {animation: false});
+        requestAnimationFrame(this.refresh.bind(this));
+    },
+    update: function(value) {
         var now = vis.moment();
-        dataset.add({
+
+        this.dataSet.add({
           x: now,
-          y: event.data
+          y: value
         });
 
-        var range = graph2d.getWindow();
+        var range = this.graph2d.getWindow();
         var interval = range.end - range.start;
-        var oldIds = dataset.getIds({
-          filter: function (item) {
-            return item.x < range.start - interval;
-          }
+        var oldIds = this.dataSet.getIds({
+            filter: function (item) {
+                return item.x < range.start - interval;
+            }
         });
-        dataset.remove(oldIds);
-    };
-
-    source.onopen = function(e) {
-       console.log("Connection was opened.");
-    };
-})();
+        this.dataSet.remove(oldIds);
+    }
+}

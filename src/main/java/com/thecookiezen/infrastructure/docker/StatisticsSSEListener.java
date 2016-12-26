@@ -4,7 +4,7 @@ import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.model.Statistics;
 import com.google.common.collect.Lists;
 import com.thecookiezen.bussiness.cluster.boundary.ContainerFetcher;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.Closeable;
@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@Log4j
+@CommonsLog
 public class StatisticsSSEListener implements ResultCallback<Statistics> {
 
     private final List<SseEmitter> emitters = Lists.newCopyOnWriteArrayList();
@@ -49,7 +49,7 @@ public class StatisticsSSEListener implements ResultCallback<Statistics> {
     public void onNext(Statistics statistics) {
         emitters.removeIf(e -> {
             try {
-                e.send(statistics.getMemoryStats().get("usage"));
+                e.send(new StatisticsLite(statistics));
             } catch (Exception ex) {
                 log.error("Error during processing statistics event.", ex);
                 return true;
