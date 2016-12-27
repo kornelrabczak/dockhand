@@ -2,6 +2,7 @@ package com.thecookiezen.bussiness.cluster.control;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.InspectContainerResponse;
+import com.github.dockerjava.api.command.LogContainerCmd;
 import com.github.dockerjava.api.command.StatsCmd;
 import com.github.dockerjava.api.model.Container;
 import com.github.dockerjava.api.model.Info;
@@ -49,5 +50,14 @@ public class NodeInstance implements ContainerFetcher {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public LogContainerCmd logs(String containerId) {
+        return dockerClient.logContainerCmd(containerId)
+                .withFollowStream(true)
+                .withTailAll()
+                .withStdErr(true)
+                .withStdOut(true);
     }
 }

@@ -1,7 +1,7 @@
 var StatisticsEventBus = StatisticsEventBus || {};
 
 var StatisticsEventBus = function(clusterId, nodeId, containerId) {
-    this.source = new EventSource("/statistics/subscribe/" + clusterId + "/" + nodeId + "/" + containerId);
+    this.source = new EventSource("/cluster/" + clusterId + "/node/" + nodeId + "/container/" + containerId + "/statistics");
     this.source.eventBus = this;
     this.source.onmessage = this.process;
     this.source.onopen = function(e) {
