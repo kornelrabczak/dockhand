@@ -13,8 +13,27 @@
     </section>
 
     <section class="content">
-        <div th:replace="fragments/containers/statistics :: statistics"></div>
-        <div th:replace="fragments/containers/logs :: log"></div>
+        <div>
+            <!-- Custom Tabs -->
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab_1" data-toggle="tab">Info</a></li>
+                    <li><a href="#tab_2" data-toggle="tab">Monitoring</a></li>
+                    <li><a href="#tab_3" data-toggle="tab">Logs</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_1">
+                        <pre th:text="${container}"></pre>
+                    </div>
+                    <div class="tab-pane" id="tab_2">
+                        <div th:replace="fragments/containers/statistics :: statistics"></div>
+                    </div>
+                    <div class="tab-pane" id="tab_3">
+                        <div th:replace="fragments/containers/logs :: log"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 </div>
 

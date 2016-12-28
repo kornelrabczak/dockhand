@@ -5,48 +5,25 @@
 <body>
 
 <div th:fragment="log">
-    <div class="row">
+    <div>
         <form>
             <textarea id="code" name="code"></textarea>
         </form>
     </div>
 
-    <script src="/js/codemirror.js"></script>
-    <link rel="stylesheet" href="/css/codemirror.css"/>
-    <link rel="stylesheet" href="/css/monokai.css"/>
-    <script src="/js/javascript.js"></script>
-
+    <script src="/js/vendors/codemirror.js"></script>
+    <link rel="stylesheet" href="/css/vendors/codemirror.css"/>
+    <link rel="stylesheet" href="/css/vendors/monokai.css"/>
+    <script src="/js/vendors/javascript.js"></script>
+    <script src="/js/logs.js"></script>
+    <style type="text/css">
+        .CodeMirror { height: auto; border: 1px solid #ddd;}
+        .CodeMirror-scroll { max-height: 70vh;}
+    </style>
     <script th:inline="javascript">
     /*<![CDATA[*/
-        var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("code"), {
-          lineNumbers: true,
-          lineWrapping: true,
-          readOnly:true,
-          mode:  "javascript",
-          theme: "monokai",
-          height: 200
-        });
+    new LogsPrinter(document.getElementById("code"), "[[${clusterId}]]", "[[${node.id}]]", [[${container.id}]]);
     /*]]>*/
-
-    var source = new EventSource("/cluster/" + "[[${clusterId}]]" + "/node/" + "[[${node.id}]]" + "/container/" + [[${container.id}]] + "/logs");
-
-    source.onmessage = function(message) {
-        var string = message.data.replace(/\*/, '');
-        updateCodeMirror(string);
-    };
-
-    source.onopen = function(e) {
-       console.log("Connection was opened.");
-    };
-
-    function updateCodeMirror(data) {
-        var pos = {
-            line: myCodeMirror.lastLine(),
-            ch: 0
-        };
-        myCodeMirror.replaceRange(data + "\n", pos);
-        myCodeMirror.scrollIntoView(myCodeMirror.lastLine());
-    }
     </script>
 </div>
 
