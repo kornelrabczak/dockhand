@@ -23,7 +23,61 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab_1">
-                        <pre th:text="${container}"></pre>
+                        <div class="box-body" th:with="nodeInfo=${node.info}">
+                            <table class="table table-bordered">
+                                <tbody>
+                                <tr>
+                                    <th>Name</th>
+                                    <td th:text="${container.name}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Image name</th>
+                                    <td th:text="${container.config.image}"></td>
+                                </tr>
+                                <tr>
+                                    <th>ImageId</th>
+                                    <td th:text="${container.imageId}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td>
+                                        <span class="fa-stack fa-lg" style="color:green">
+                                          <i class="fa fa-check-circle"></i>
+                                        </span>
+                                        <span th:text="${container.state.status}"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Created</th>
+                                    <td th:text="${container.created}"></td>
+                                </tr>
+                                <tr>
+                                    <th>restartCount</th>
+                                    <td th:text="${container.restartCount}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Volumes</th>
+                                    <td>
+                                        <div th:replace="fragments/containers/info :: volumes(volumes=${container.config.volumes})"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Envs</th>
+                                    <td>
+                                        <div th:replace="fragments/containers/info :: envs(envs=${container.config.env})"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Ports mapping</th>
+                                    <td th:text="${container.config.exposedPorts}"></td>
+                                </tr>
+                                <tr>
+                                    <th>Network</th>
+                                    <td th:text="${container.networkSettings}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <div class="tab-pane" id="tab_2">
                         <div th:replace="fragments/containers/statistics :: statistics"></div>

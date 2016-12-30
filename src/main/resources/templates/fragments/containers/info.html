@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+    <div th:fragment="volumes">
+        <ul th:each="volume : ${volumes}">
+                <li th:text="${volume}"></li>
+        </ul>
+    </div>
+    <div th:fragment="envs">
+        <ul th:each="env : ${envs}">
+            <li th:text="${env}"></li>
+        </ul>
+    </div>
+</body>
+</html>
