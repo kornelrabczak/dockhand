@@ -7,12 +7,17 @@ var LogsPrinter = function(element, clusterId, nodeId, containerId) {
        theme: "monokai"
     });
 
+    this.myCodeMirror.setValue("");
+    this.myCodeMirror.clearHistory();
     this.source = new EventSource("/cluster/" + clusterId + "/node/" + nodeId + "/container/" + containerId + "/logs");
     this.source.logsPrinter = this;
     this.source.onmessage = this.handleEvent;
     this.source.onopen = function(e) {
-        console.log("Connection was opened.");
+        console.log("LogsPrinter: Connection was opened.");
+        this.logsPrinter.myCodeMirror.setValue("");
+        this.logsPrinter.myCodeMirror.clearHistory();
     };
+    this.refresh("");
 }
 
 LogsPrinter.prototype = {

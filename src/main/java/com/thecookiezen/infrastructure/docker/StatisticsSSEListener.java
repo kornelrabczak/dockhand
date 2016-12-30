@@ -3,18 +3,13 @@ package com.thecookiezen.infrastructure.docker;
 import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.model.Statistics;
 import com.github.dockerjava.core.async.ResultCallbackTemplate;
-import com.google.common.collect.Lists;
 import com.thecookiezen.bussiness.cluster.boundary.ContainerFetcher;
 import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.io.IOException;
-import java.util.List;
-
 @CommonsLog
 public class StatisticsSSEListener {
 
-    private final List<SseEmitter> emitters = Lists.newCopyOnWriteArrayList();
     private final String containerId;
     private final ContainerFetcher nodeInstance;
 
@@ -28,29 +23,20 @@ public class StatisticsSSEListener {
             throw new IllegalStateException("Container not running.");
         }
 
-        SseEmitter sseEmitter = new SseEmitter();
-        emitters.add(sseEmitter);
-        nodeInstance.statsCmd(containerId).exec(new ResultCallbackTemplate<ResultCallback<Statistics>, Statistics>() {
+        final SseEmitter sseEmitter = new SseEmitter();
+        ResultCallbackTemplate<ResultCallback<Statistics>, Statistics> resultCallback = new ResultCallbackTemplate<ResultCallback<Statistics>, Statistics>() {
             @Override
             public void onNext(Statistics statistics) {
-                emitters.removeIf(e -> {
-                    try {
-                        e.send(new StatisticsLite(statistics));
-                    } catch (Exception ex) {
-                        log.error("Error during processing statistics event.", ex);
-                        return true;
-                    }
-                    return false;
-                });
-
-                if (emitters.isEmpty())
-                    try {
-                        close();
-                    } catch (IOException e) {
-                        log.error("Error during closing stream.", e);
-                    }
+                try {
+                    sseEmitter.send(new StatisticsLite(statistics));
+                } catch (Exception ex) {
+                    throw new IllegalStateException("Error during stream closing.", ex);
+                }
             }
-        });
+        };
+        nodeInstance.statsCmd(containerId).exec(resultCallback);
+        sseEmitter.onTimeout(resultCallback::onComplete);
+        sseEmitter.onCompletion(resultCallback::onComplete);
         return sseEmitter;
     }
 }

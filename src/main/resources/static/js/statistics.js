@@ -5,7 +5,7 @@ var StatisticsEventBus = function(clusterId, nodeId, containerId) {
     this.source.eventBus = this;
     this.source.onmessage = this.process;
     this.source.onopen = function(e) {
-       console.log("Connection was opened.");
+       console.log("StatisticsEventBus: Connection was opened.");
     };
 
     this.subscriptions = [];

@@ -1,8 +1,10 @@
 package com.thecookiezen.bussiness.cluster.control;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.DockerCmdExecFactory;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
+import com.github.dockerjava.jaxrs.JerseyDockerCmdExecFactory;
 import com.thecookiezen.bussiness.cluster.boundary.ContainerFetcher;
 import com.thecookiezen.bussiness.cluster.entity.Cluster;
 import lombok.Data;
@@ -37,7 +39,14 @@ public class ClusterInstance {
                 .withDockerHost(dockerHost)
                 .withApiVersion(apiVersion)
                 .build();
-        return DockerClientBuilder.getInstance(config).build();
+
+        DockerCmdExecFactory dockerCmdExecFactory = new JerseyDockerCmdExecFactory()
+                .withMaxTotalConnections(200)
+                .withMaxPerRouteConnections(20);
+
+        return DockerClientBuilder.getInstance(config)
+                .withDockerCmdExecFactory(dockerCmdExecFactory)
+                .build();
     }
 
     public void stop() {

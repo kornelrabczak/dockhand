@@ -25,7 +25,7 @@ public class LogsSSEListener {
         }
 
         final SseEmitter sseEmitter = new SseEmitter();
-        nodeInstance.logs(containerId).exec(new LogContainerResultCallback(){
+        LogContainerResultCallback resultCallback = new LogContainerResultCallback() {
             @Override
             public void onNext(Frame item) {
                 try {
@@ -34,7 +34,10 @@ public class LogsSSEListener {
                     throw new IllegalStateException("Error during stream closing.");
                 }
             }
-        });
+        };
+        nodeInstance.logs(containerId).exec(resultCallback);
+        sseEmitter.onTimeout(resultCallback::onComplete);
+        sseEmitter.onCompletion(resultCallback::onComplete);
         return sseEmitter;
     }
 }
