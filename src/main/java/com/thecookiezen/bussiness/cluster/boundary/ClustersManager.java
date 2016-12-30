@@ -3,7 +3,6 @@ package com.thecookiezen.bussiness.cluster.boundary;
 import com.thecookiezen.bussiness.cluster.control.ClusterInstance;
 import com.thecookiezen.bussiness.cluster.control.ClusterRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +12,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-@Log4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ClustersManager {
 

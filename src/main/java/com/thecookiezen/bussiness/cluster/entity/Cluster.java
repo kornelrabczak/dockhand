@@ -1,6 +1,5 @@
 package com.thecookiezen.bussiness.cluster.entity;
 
-import com.thecookiezen.infrastructure.persistence.Identifiable;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Data
-public class Cluster implements Identifiable, Serializable {
+public class Cluster implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

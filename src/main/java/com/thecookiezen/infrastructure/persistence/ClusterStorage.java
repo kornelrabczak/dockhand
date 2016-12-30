@@ -1,7 +1,6 @@
 package com.thecookiezen.infrastructure.persistence;
 
-import lombok.extern.log4j.Log4j;
-import pl.setblack.airomem.core.WriteChecker;
+import com.thecookiezen.bussiness.cluster.entity.Cluster;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -9,22 +8,20 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Log4j
-public class Storage<T extends Identifiable> implements Serializable {
+public class ClusterStorage implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Map<Long, T> store = new ConcurrentHashMap<>();
+    private Map<Long, Cluster> store = new ConcurrentHashMap<>();
 
-    public void add(T element) {
-        assert WriteChecker.hasPrevalanceContext();
+    public void add(Cluster element) {
         this.store.put(element.getId(), element);
     }
 
-    public Optional<T> getById(long id) {
+    public Optional<Cluster> getById(long id) {
         return Optional.ofNullable(store.get(id));
     }
 
-    public Collection<T> getAll() {
+    public Collection<Cluster> getAll() {
         return this.store.values();
     }
 

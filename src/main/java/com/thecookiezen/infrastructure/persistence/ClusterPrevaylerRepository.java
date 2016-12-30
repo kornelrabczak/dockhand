@@ -2,25 +2,28 @@ package com.thecookiezen.infrastructure.persistence;
 
 import com.thecookiezen.bussiness.cluster.control.ClusterRepository;
 import com.thecookiezen.bussiness.cluster.entity.Cluster;
+import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.stereotype.Component;
-import pl.setblack.airomem.core.PersistenceController;
-import pl.setblack.airomem.core.builders.PersistenceFactory;
-import pl.setblack.airomem.data.DataRoot;
+import pl.setblack.airomem.core.Persistent;
 
 import javax.annotation.PostConstruct;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Random;
 
 @Component
+@CommonsLog
 public class ClusterPrevaylerRepository implements ClusterRepository {
 
-    private PersistenceController<DataRoot<Storage<Cluster>, Storage<Cluster>>, Storage<Cluster>> controller;
+    private final Path storeFolder = Paths.get("clustersStore");
+
+    private Persistent<ClusterStorage> storage;
 
     @PostConstruct
     void initController() {
-        final PersistenceFactory factory = new PersistenceFactory();
-        controller = factory.initOptional("clusters", () -> new DataRoot<>(new Storage<Cluster>()));
+        storage =  Persistent.loadOptional(storeFolder, ClusterStorage::new);
     }
 
     @Override
@@ -34,21 +37,21 @@ public class ClusterPrevaylerRepository implements ClusterRepository {
             }
         }
 
-        controller.execute(view -> view.getDataObject().add(cluster));
+        storage.execute(new SaveStorageCommand(cluster));
     }
 
     @Override
     public Collection<Cluster> getAll() {
-        return controller.query(Storage::getAll);
+        return storage.query(ClusterStorage::getAll);
     }
 
     @Override
     public Optional<Cluster> getById(long id) {
-        return controller.query(view -> view.getById(id));
+        return storage.query(view -> view.getById(id));
     }
 
     @Override
     public void remove(long clusterId) {
-        controller.execute(view -> view.getDataObject().remove(clusterId));
+        storage.execute(new RemoveClusterCommand(clusterId));
     }
 }

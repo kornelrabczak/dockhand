@@ -4,7 +4,7 @@ import com.thecookiezen.bussiness.cluster.control.ClusterRepository;
 import com.thecookiezen.bussiness.cluster.entity.Cluster;
 import com.thecookiezen.bussiness.cluster.entity.DockerHost;
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +18,7 @@ import javax.validation.Valid;
 import java.util.Collection;
 
 @Controller
-@Log4j
+@CommonsLog
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class ClusterController {
 
