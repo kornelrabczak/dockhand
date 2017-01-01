@@ -1,13 +1,9 @@
 var StatisticsEventBus = StatisticsEventBus || {};
 
 var StatisticsEventBus = function(clusterId, nodeId, containerId) {
-    this.source = new EventSource("/cluster/" + clusterId + "/node/" + nodeId + "/container/" + containerId + "/statistics");
-    this.source.eventBus = this;
-    this.source.onmessage = this.process;
-    this.source.onopen = function(e) {
-       console.log("StatisticsEventBus: Connection was opened.");
-    };
-
+    this.clusterId = clusterId;
+    this.nodeId = nodeId;
+    this.containerId = containerId;
     this.subscriptions = [];
 };
 
@@ -21,6 +17,19 @@ StatisticsEventBus.prototype = {
         for (var key in this.eventBus.subscriptions) {
             var listener = this.eventBus.subscriptions[key];
             listener.update(data[key]);
+        }
+    },
+    start: function() {
+        this.source = new EventSource("/cluster/" + this.clusterId + "/node/" + this.nodeId + "/container/" + this.containerId + "/statistics");
+        this.source.eventBus = this;
+        this.source.onmessage = this.process;
+        this.source.onopen = function(e) {
+           console.log("StatisticsEventBus: Connection was opened.");
+        };
+    },
+    stop: function() {
+        if (typeof this.source != "undefined") {
+            this.source.close();
         }
     }
 };

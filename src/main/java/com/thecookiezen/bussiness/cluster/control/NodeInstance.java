@@ -1,13 +1,20 @@
 package com.thecookiezen.bussiness.cluster.control;
 
 import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.command.LogContainerCmd;
 import com.github.dockerjava.api.command.StatsCmd;
 import com.github.dockerjava.api.model.Container;
+import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.api.model.Info;
+import com.github.dockerjava.core.command.LogContainerResultCallback;
 import com.thecookiezen.bussiness.cluster.boundary.ContainerFetcher;
 import lombok.Data;
+import rx.Emitter;
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Cancellable;
 
 import java.util.Collection;
 
@@ -53,11 +60,22 @@ public class NodeInstance implements ContainerFetcher {
     }
 
     @Override
-    public LogContainerCmd logs(String containerId) {
-        return dockerClient.logContainerCmd(containerId)
+    public Observable<String> logs(String containerId) {
+        LogContainerCmd logContainerCmd = dockerClient.logContainerCmd(containerId)
                 .withFollowStream(true)
                 .withTailAll()
                 .withStdErr(true)
                 .withStdOut(true);
+
+        return Observable.fromEmitter(stringEmitter -> {
+            final ResultCallback logContainerResultCallback = new LogContainerResultCallback() {
+                @Override
+                public void onNext(Frame item) {
+                    stringEmitter.onNext(new String(item.getPayload()));
+                }
+            };
+            stringEmitter.setCancellation(logContainerResultCallback::onComplete);
+            logContainerCmd.exec(logContainerResultCallback);
+        }, Emitter.BackpressureMode.BUFFER);
     }
 }

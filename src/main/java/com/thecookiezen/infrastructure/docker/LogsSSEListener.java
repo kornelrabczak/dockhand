@@ -1,12 +1,11 @@
 package com.thecookiezen.infrastructure.docker;
 
-import com.github.dockerjava.api.model.Frame;
-import com.github.dockerjava.core.command.LogContainerResultCallback;
 import com.thecookiezen.bussiness.cluster.boundary.ContainerFetcher;
 import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 @CommonsLog
 public class LogsSSEListener {
@@ -25,19 +24,22 @@ public class LogsSSEListener {
         }
 
         final SseEmitter sseEmitter = new SseEmitter();
-        LogContainerResultCallback resultCallback = new LogContainerResultCallback() {
-            @Override
-            public void onNext(Frame item) {
-                try {
-                    sseEmitter.send(new String(item.getPayload()));
-                } catch (IOException e) {
-                    throw new IllegalStateException("Error during stream closing.");
-                }
-            }
-        };
-        nodeInstance.logs(containerId).exec(resultCallback);
-        sseEmitter.onTimeout(resultCallback::onComplete);
-        sseEmitter.onCompletion(resultCallback::onComplete);
+
+        nodeInstance.logs(containerId)
+                .window(200, TimeUnit.MILLISECONDS)
+                .flatMap(window -> window.reduce("", (a,b) -> a + b))
+                .subscribe(
+                        value -> {
+                            try {
+                                sseEmitter.send(value);
+                            } catch (IOException e) {
+                                throw new RuntimeException("Sending message failed.");
+                            }
+                        },
+                        sseEmitter::completeWithError,
+                        sseEmitter::complete
+                );
+
         return sseEmitter;
     }
 }

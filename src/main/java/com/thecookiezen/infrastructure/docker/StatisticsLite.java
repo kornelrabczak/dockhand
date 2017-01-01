@@ -8,17 +8,17 @@ import java.util.Map;
 @Value
 class StatisticsLite {
 
-    private int rx_bytes;
-    private int tx_bytes;
-    private long memoryUsage;
-    private long cpuTotalUsage;
+    private Object rx_bytes;
+    private Object tx_bytes;
+    private Object memoryUsage;
+    private Object cpuTotalUsage;
 
     public StatisticsLite(Statistics statistics) {
-        Map<String, Integer> eth0 = (Map<String, Integer>) statistics.getNetworks().get("eth0");
+        Map<String, Object> eth0 = (Map<String, Object>) statistics.getNetworks().get("eth0");
         rx_bytes = eth0.get("rx_bytes");
         tx_bytes = eth0.get("tx_bytes");
-        memoryUsage = (int) statistics.getMemoryStats().get("usage");
-        Map<String, Long> cpu_usage = (Map<String, Long>) statistics.getCpuStats().get("cpu_usage");
+        memoryUsage = statistics.getMemoryStats().get("usage");
+        Map<String, Object> cpu_usage = (Map<String, Object>) statistics.getCpuStats().get("cpu_usage");
         cpuTotalUsage = cpu_usage.get("total_usage");
     }
 }

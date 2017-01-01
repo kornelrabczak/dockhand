@@ -20,11 +20,6 @@
         .CodeMirror { height: auto; border: 1px solid #ddd;}
         .CodeMirror-scroll { max-height: 70vh;}
     </style>
-    <script th:inline="javascript">
-    /*<![CDATA[*/
-    new LogsPrinter(document.getElementById("code"), "[[${clusterId}]]", "[[${node.id}]]", [[${container.id}]]);
-    /*]]>*/
-    </script>
 </div>
 
 </body>
