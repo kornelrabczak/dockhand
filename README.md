@@ -11,6 +11,8 @@
 
 Application with dashboard UI for docker containers management: monitoring, scaling, deploying new instances.
 
+![tux](http://shalena.net.ua/wp-content/uploads/2008/08/kami23-working-tux-12292.png)
+
 ## Running application
 
     mvn spring-boot:run

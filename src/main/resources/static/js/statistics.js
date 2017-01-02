@@ -1,44 +1,81 @@
-(function() {
-   var graphData = [];
+var StatisticsEventBus = StatisticsEventBus || {};
 
-    // initialize graph data
-    for(var i = 0; i < 10; i++) {
-        var graphPoint = {};
-        graphPoint.timestamp = new Date().getTime();
-        graphPoint.memory = 0;
-        graphData.push(graphPoint);
+var StatisticsEventBus = function(clusterId, nodeId, containerId) {
+    this.clusterId = clusterId;
+    this.nodeId = nodeId;
+    this.containerId = containerId;
+    this.subscriptions = [];
+};
+
+StatisticsEventBus.prototype = {
+    addListener: function(type, listener) {
+        this.subscriptions[type] = listener;
+    },
+    process: function(event) {
+        var data = JSON.parse(event.data);
+
+        for (var key in this.eventBus.subscriptions) {
+            var listener = this.eventBus.subscriptions[key];
+            listener.update(data[key]);
+        }
+    },
+    start: function() {
+        this.source = new EventSource("/cluster/" + this.clusterId + "/node/" + this.nodeId + "/container/" + this.containerId + "/statistics");
+        this.source.eventBus = this;
+        this.source.onmessage = this.process;
+        this.source.onopen = function(e) {
+           console.log("StatisticsEventBus: Connection was opened.");
+        };
+    },
+    stop: function() {
+        if (typeof this.source != "undefined") {
+            this.source.close();
+        }
     }
+};
 
-    var mainGraph = Morris.Line({
-        element: 'myfirstchart',
-        data: graphData,
-        xkey: 'timestamp',
-        ykeys: ['memory'],
+var StatisticChart = function (element) {
+    this.element = document.getElementById(element);
+    this.dataSet = new vis.DataSet();
+    this.options = {
+        drawPoints: false,
+        moveable: false,
+        showCurrentTime: false,
+        start: vis.moment().add(-30, 'seconds'),
+        end: vis.moment(),
+        shaded: {
+          orientation: 'bottom'
+        },
+        graphHeight: 250
+    };
+    this.graph2d = new vis.Graph2d(this.element, this.dataSet, this.options);
+    this.refresh();
+};
 
-        postUnits: ' °c',
-        lineColors: ['#199cef'],
-        goals: [6.0],
-        goalLineColors: ['#FF0000'],
-        labels: ['Temperature'],
-        lineWidth: 3,
-        pointSize: 2,
-        resize: true
-    });
+StatisticChart.prototype = {
+    refresh: function() {
+        var now = vis.moment();
+        var range = this.graph2d.getWindow();
+        var interval = range.end - range.start;
 
-    var source = new EventSource('/statistics/subscribe/cc8fa66f9da7');
+        this.graph2d.setWindow(now - interval, now, {animation: false});
+        requestAnimationFrame(this.refresh.bind(this));
+    },
+    update: function(value) {
+        var now = vis.moment();
 
-    source.addEventListener('message', function(e) {
-       var graphPoint = {};
-       graphPoint.timestamp = new Date().getTime();
-       graphPoint.memory = e.data;
+        this.dataSet.add({
+          x: now,
+          y: value
+        });
 
-       graphData.splice(0, 1);
-       graphData.push(graphPoint);
-
-       mainGraph.setData(graphData);
-    });
-
-    source.addEventListener('open', function(e) {
-       console.log("Connection was opened.");
-    }, false);
-})();
+        var range = this.graph2d.getWindow();
+        var interval = range.end - range.start;
+        var oldIds = this.dataSet.getIds({
+            filter: function (item) {
+                return item.x < range.start - interval;
+            }
+        });
+        this.dataSet.remove(oldIds);
+    }
+}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+
+<div th:fragment="log">
+    <div>
+        <form>
+            <textarea id="code" name="code"></textarea>
+        </form>
+    </div>
+
+    <script src="/js/vendors/codemirror.js"></script>
+    <link rel="stylesheet" href="/css/vendors/codemirror.css"/>
+    <link rel="stylesheet" href="/css/vendors/monokai.css"/>
+    <script src="/js/vendors/javascript.js"></script>
+    <script src="/js/logs.js"></script>
+    <style type="text/css">
+        .CodeMirror { height: auto; border: 1px solid #ddd;}
+        .CodeMirror-scroll { max-height: 70vh;}
+    </style>
+</div>
+
+</body>
+</html>

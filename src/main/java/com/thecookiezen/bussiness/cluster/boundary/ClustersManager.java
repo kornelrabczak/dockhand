@@ -2,18 +2,19 @@ package com.thecookiezen.bussiness.cluster.boundary;
 
 import com.thecookiezen.bussiness.cluster.control.ClusterInstance;
 import com.thecookiezen.bussiness.cluster.control.ClusterRepository;
+import com.thecookiezen.bussiness.cluster.entity.Cluster;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-@Log4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ClustersManager {
 
@@ -26,8 +27,26 @@ public class ClustersManager {
         clusterRepository.getAll().forEach(cluster -> instances.put(cluster.getId(), new ClusterInstance(cluster)));
     }
 
+    public Collection<Cluster> clustersList() {
+        return clusterRepository.getAll();
+    }
+
+    public Optional<Cluster> getClusterById(long clusterId) {
+        return clusterRepository.getById(clusterId);
+    }
+
     public ClusterInstance getInstance(long clusterId) {
         return instances.get(clusterId);
+    }
+
+    public void remove(Long clusterId) {
+        clusterRepository.remove(clusterId);
+        instances.remove(clusterId);
+    }
+
+    public void save(Cluster cluster) {
+        clusterRepository.save(cluster);
+        instances.compute(cluster.getId(), (k, v) -> new ClusterInstance(clusterRepository.getById(k).get()));
     }
 
     @PreDestroy

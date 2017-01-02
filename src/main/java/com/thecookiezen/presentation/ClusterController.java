@@ -1,10 +1,10 @@
 package com.thecookiezen.presentation;
 
-import com.thecookiezen.bussiness.cluster.control.ClusterRepository;
+import com.thecookiezen.bussiness.cluster.boundary.ClustersManager;
 import com.thecookiezen.bussiness.cluster.entity.Cluster;
 import com.thecookiezen.bussiness.cluster.entity.DockerHost;
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,21 +18,21 @@ import javax.validation.Valid;
 import java.util.Collection;
 
 @Controller
-@Log4j
+@CommonsLog
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class ClusterController {
 
-    ClusterRepository clusterRepository;
+    ClustersManager clustersManager;
 
     @ModelAttribute(name = "clustersList")
     public Collection<Cluster> getAll() {
-        return clusterRepository.getAll();
+        return clustersManager.clustersList();
     }
 
     @RequestMapping(value = "clusters/form", method = RequestMethod.GET)
     public String showForm(@RequestParam(required = false) Long clusterId, Model model) {
         if (clusterId != null) {
-            model.addAttribute("cluster", clusterRepository.getById(clusterId).orElse(new Cluster()));
+            model.addAttribute("cluster", clustersManager.getClusterById(clusterId).orElse(new Cluster()));
         } else {
             model.addAttribute("cluster", new Cluster());
         }
@@ -46,7 +46,7 @@ public class ClusterController {
 
     @RequestMapping(value = "clusters", method = RequestMethod.DELETE)
     public String delete(@RequestParam Long clusterId) {
-        clusterRepository.remove(clusterId);
+        clustersManager.remove(clusterId);
         return "redirect:/clusters/all";
     }
 
@@ -65,17 +65,17 @@ public class ClusterController {
             return "clusters/addhost";
         }
 
-        Cluster cluster = clusterRepository.getById(clusterId).get();
+        Cluster cluster = clustersManager.getClusterById(clusterId).get();
         cluster.getHosts().add(dockerHost);
-        clusterRepository.save(cluster);
+        clustersManager.save(cluster);
         return "redirect:/clusters/all";
     }
 
     @RequestMapping(value = "clusters/node", method = RequestMethod.DELETE)
     public String deleteHost(@RequestParam Long clusterId, @RequestParam Long hostId) {
-        Cluster cluster = clusterRepository.getById(clusterId).get();
+        Cluster cluster = clustersManager.getClusterById(clusterId).get();
         cluster.getHosts().removeIf(h -> h.getId() == hostId);
-        clusterRepository.save(cluster);
+        clustersManager.save(cluster);
         return "redirect:/clusters/all";
     }
 
@@ -86,7 +86,7 @@ public class ClusterController {
             return "clusters/form";
         }
 
-        clusterRepository.save(cluster);
+        clustersManager.save(cluster);
         return "redirect:/clusters/all";
     }
 }
