@@ -17,8 +17,11 @@ var LogsPrinter = function(element, clusterId, nodeId, containerId) {
 
 LogsPrinter.prototype = {
     handleEvent: function(event) {
-        var string = event.data.replace(/\*/, '');
-        this.logsPrinter.refresh(string);
+        var messageObject = JSON.parse(event.data);
+        var string = messageObject.message.replace(/\*/, '');
+        if (string.length > 0) {
+            this.logsPrinter.refresh(string);
+        }
     },
     refresh: function(data) {
         var pos = {

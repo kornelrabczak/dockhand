@@ -1,4 +1,4 @@
-package com.thecookiezen.infrastructure.docker;
+package com.thecookiezen.bussiness.cluster.entity;
 
 import com.github.dockerjava.api.model.Statistics;
 import lombok.Value;
@@ -6,7 +6,7 @@ import lombok.Value;
 import java.util.Map;
 
 @Value
-class StatisticsLite {
+public class StatisticsLite {
 
     private Object rx_bytes;
     private Object tx_bytes;

@@ -7,10 +7,10 @@ import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.jaxrs.JerseyDockerCmdExecFactory;
 import com.thecookiezen.bussiness.cluster.boundary.ContainerFetcher;
 import com.thecookiezen.bussiness.cluster.entity.Cluster;
+import com.thecookiezen.infrastructure.docker.NodeInstance;
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +20,7 @@ public class ClusterInstance {
 
     private final Cluster cluster;
 
-    private Map<Long, NodeInstance> nodes = new HashMap<>();
+    private Map<Long, ContainerFetcher> nodes = new HashMap<>();
 
     public ClusterInstance(Cluster cluster) {
         this.cluster = cluster;
@@ -50,13 +50,7 @@ public class ClusterInstance {
     }
 
     public void stop() {
-        nodes.values().forEach(node -> {
-            try {
-                node.getDockerClient().close();
-            } catch (IOException e) {
-                log.error("Error occurred during closing docker client for node [" + node.getName() + "]");
-            }
-        });
+        nodes.values().forEach(ContainerFetcher::close);
     }
 
     public ContainerFetcher getNode(long nodeId) {

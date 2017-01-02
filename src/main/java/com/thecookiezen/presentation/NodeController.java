@@ -1,8 +1,8 @@
 package com.thecookiezen.presentation;
 
 import com.thecookiezen.bussiness.cluster.boundary.ClustersManager;
+import com.thecookiezen.bussiness.cluster.boundary.ContainerFetcher;
 import com.thecookiezen.bussiness.cluster.control.ClusterInstance;
-import com.thecookiezen.bussiness.cluster.control.NodeInstance;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,7 +19,7 @@ public class NodeController {
     @RequestMapping("/cluster/{clusterId}/node/{nodeId}")
     public String node(@PathVariable("clusterId") long clusterId, @PathVariable("nodeId") long nodeId, Model model) {
         ClusterInstance instance = clustersManager.getInstance(clusterId);
-        NodeInstance nodeInstance = instance.getNodes().get(nodeId);
+        ContainerFetcher nodeInstance = instance.getNodes().get(nodeId);
         model.addAttribute("clusterName", instance.getName());
         model.addAttribute("clusterId", clusterId);
         model.addAttribute("node", nodeInstance);

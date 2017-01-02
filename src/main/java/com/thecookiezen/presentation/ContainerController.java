@@ -3,9 +3,8 @@ package com.thecookiezen.presentation;
 import com.thecookiezen.bussiness.cluster.boundary.ClustersManager;
 import com.thecookiezen.bussiness.cluster.boundary.ContainerFetcher;
 import com.thecookiezen.bussiness.cluster.control.ClusterInstance;
-import com.thecookiezen.bussiness.cluster.control.NodeInstance;
-import com.thecookiezen.infrastructure.docker.LogsSSEListener;
-import com.thecookiezen.infrastructure.docker.StatisticsSSEListener;
+import com.thecookiezen.presentation.streaming.LogsSSEListener;
+import com.thecookiezen.presentation.streaming.StatisticsSSEListener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +48,7 @@ public class ContainerController {
     public String node(@PathVariable("clusterId") long clusterId, @PathVariable("nodeId") long nodeId,
                        @PathVariable("containerId") String containerId, Model model) {
         ClusterInstance instance = clustersManager.getInstance(clusterId);
-        NodeInstance nodeInstance = instance.getNodes().get(nodeId);
+        ContainerFetcher nodeInstance = instance.getNodes().get(nodeId);
         model.addAttribute("clusterId", clusterId);
         model.addAttribute("node", nodeInstance);
         model.addAttribute("container", nodeInstance.getContainer(containerId));
