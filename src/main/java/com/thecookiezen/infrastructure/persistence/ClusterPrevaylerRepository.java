@@ -19,11 +19,11 @@ public class ClusterPrevaylerRepository implements ClusterRepository {
 
     private final Path storeFolder = Paths.get("clustersStore");
 
-    private Persistent<ClusterStorage> storage;
+    private Persistent<Storage<Cluster>> storage;
 
     @PostConstruct
     void initController() {
-        storage =  Persistent.loadOptional(storeFolder, ClusterStorage::new);
+        storage =  Persistent.loadOptional(storeFolder, Storage::new);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class ClusterPrevaylerRepository implements ClusterRepository {
 
     @Override
     public Collection<Cluster> getAll() {
-        return storage.query(ClusterStorage::getAll);
+        return storage.query(Storage::getAll);
     }
 
     @Override
