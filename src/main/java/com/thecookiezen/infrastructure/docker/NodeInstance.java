@@ -12,6 +12,7 @@ import com.github.dockerjava.api.model.Statistics;
 import com.github.dockerjava.core.async.ResultCallbackTemplate;
 import com.github.dockerjava.core.command.LogContainerResultCallback;
 import com.thecookiezen.bussiness.cluster.boundary.ContainerFetcher;
+import com.thecookiezen.bussiness.cluster.entity.HostInfo;
 import com.thecookiezen.bussiness.cluster.entity.StatisticsLite;
 import lombok.Data;
 import lombok.extern.apachecommons.CommonsLog;
@@ -37,8 +38,20 @@ public class NodeInstance implements ContainerFetcher {
     }
 
     @Override
-    public Info getInfo() {
-        return dockerClient.infoCmd().exec();
+    public HostInfo getInfo() {
+        Info info = dockerClient.infoCmd().exec();
+        return new HostInfo(
+                info.getName(),
+                "",
+                info.getOperatingSystem(),
+                info.getServerVersion(),
+                info.getContainers(),
+                info.getContainersStopped(),
+                info.getContainersPaused(),
+                info.getContainersRunning(),
+                info.getMemTotal(),
+                info.getKernelVersion()
+        );
     }
 
     public InspectContainerResponse getContainer(String containerId) {

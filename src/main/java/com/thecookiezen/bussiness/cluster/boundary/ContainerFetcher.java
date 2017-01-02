@@ -2,7 +2,7 @@ package com.thecookiezen.bussiness.cluster.boundary;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.Container;
-import com.github.dockerjava.api.model.Info;
+import com.thecookiezen.bussiness.cluster.entity.HostInfo;
 import com.thecookiezen.bussiness.cluster.entity.StatisticsLite;
 import rx.Observable;
 
@@ -11,7 +11,7 @@ import java.util.Collection;
 public interface ContainerFetcher {
     Collection<Container> getContainers();
 
-    Info getInfo();
+    HostInfo getInfo();
 
     InspectContainerResponse getContainer(String containerId);
 
