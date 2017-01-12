@@ -1,7 +1,12 @@
 package com.thecookiezen.bussiness.deployment.entity;
 
-import com.thecookiezen.bussiness.cluster.entity.Cluster;
+import com.thecookiezen.bussiness.deployment.control.DeploymentState;
+import com.thecookiezen.bussiness.deployment.control.TaskState;
+import com.thecookiezen.bussiness.jobs.entity.Job;
 import lombok.Data;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Data
 public class DeploymentUnit {
@@ -10,9 +15,9 @@ public class DeploymentUnit {
 
     private final Job job;
 
-    private final Cluster cluster;
+    private final DeploymentState state;
 
-    private final DeploymentStatus status;
+    private final Map<String, TaskState> taskStateMap = new ConcurrentHashMap<>();
 
     private final int replicaFactor = 1;
 }

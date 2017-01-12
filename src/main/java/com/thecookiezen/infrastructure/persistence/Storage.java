@@ -23,7 +23,7 @@ public class Storage<T extends Identifiable> implements Serializable {
         return this.store.values();
     }
 
-    public void remove(long clusterId) {
-        store.remove(clusterId);
+    public void remove(long elementId) {
+        store.remove(elementId);
     }
 }

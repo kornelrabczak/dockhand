@@ -1,11 +1,14 @@
-package com.thecookiezen.bussiness.deployment.entity;
+package com.thecookiezen.bussiness.jobs.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-@AllArgsConstructor(staticName = "of")
-public class PortMapping {
+@AllArgsConstructor
+public class PortMapping implements Serializable {
+    private static final long serialVersionUID = 1L;
     enum Protocol {
         TCP("tcp"), UDP("udp");
 
@@ -20,6 +23,7 @@ public class PortMapping {
         }
     }
 
+    private final String name;
     private final int internalPort;
     private final Integer externalPort;
     private final Protocol protocol;
