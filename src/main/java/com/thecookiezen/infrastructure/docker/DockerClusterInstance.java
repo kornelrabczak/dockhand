@@ -9,6 +9,8 @@ import com.google.common.collect.Iterables;
 import com.thecookiezen.bussiness.cluster.boundary.ClusterFetcher;
 import com.thecookiezen.bussiness.cluster.boundary.ContainerFetcher;
 import com.thecookiezen.bussiness.cluster.entity.Cluster;
+import com.thecookiezen.bussiness.deployment.boundary.DeploymentController;
+import com.thecookiezen.bussiness.jobs.entity.Job;
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
 
@@ -22,6 +24,8 @@ public class DockerClusterInstance implements ClusterFetcher {
 
     private final Cluster cluster;
 
+    private final DeploymentController deploymentController;
+
     private Map<Long, ContainerFetcher> nodes = new HashMap<>();
 
     public DockerClusterInstance(Cluster cluster) {
@@ -30,6 +34,7 @@ public class DockerClusterInstance implements ClusterFetcher {
             DockerClient dockerClient = getDockerClient(h.getDockerDaemonUrl(), cluster.getDockerApiVersion());
             nodes.put(h.getId(), new NodeInstance(h.getId(), h.getName(), dockerClient));
         });
+        this.deploymentController = new DeploymentController(this);
     }
 
     @Override
@@ -55,6 +60,7 @@ public class DockerClusterInstance implements ClusterFetcher {
     @Override
     public void stop() {
         nodes.values().forEach(ContainerFetcher::close);
+        deploymentController.stop();
     }
 
     @Override
@@ -65,5 +71,10 @@ public class DockerClusterInstance implements ClusterFetcher {
     @Override
     public Iterator<ContainerFetcher> roundRobinHosts() {
         return Iterables.cycle(nodes.values()).iterator();
+    }
+
+    @Override
+    public void deploy(Job job) {
+        deploymentController.scheduleJobDeployment(job);
     }
 }

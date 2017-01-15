@@ -5,6 +5,7 @@ import com.github.dockerjava.api.model.Container;
 import com.thecookiezen.bussiness.cluster.entity.HostInfo;
 import com.thecookiezen.bussiness.cluster.entity.StatisticsLite;
 import com.thecookiezen.bussiness.deployment.control.ProgressDetail;
+import com.thecookiezen.bussiness.deployment.entity.DeploymentUnit;
 import com.thecookiezen.bussiness.jobs.entity.Job;
 import rx.Observable;
 
