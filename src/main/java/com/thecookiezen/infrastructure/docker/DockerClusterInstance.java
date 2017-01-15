@@ -5,6 +5,7 @@ import com.github.dockerjava.api.command.DockerCmdExecFactory;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.jaxrs.JerseyDockerCmdExecFactory;
+import com.google.common.collect.Iterables;
 import com.thecookiezen.bussiness.cluster.boundary.ClusterFetcher;
 import com.thecookiezen.bussiness.cluster.boundary.ContainerFetcher;
 import com.thecookiezen.bussiness.cluster.entity.Cluster;
@@ -12,6 +13,7 @@ import lombok.Data;
 import lombok.extern.log4j.Log4j;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 @Data
@@ -58,5 +60,10 @@ public class DockerClusterInstance implements ClusterFetcher {
     @Override
     public ContainerFetcher getNode(long nodeId) {
         return nodes.get(nodeId);
+    }
+
+    @Override
+    public Iterator<ContainerFetcher> roundRobinHosts() {
+        return Iterables.cycle(nodes.values()).iterator();
     }
 }

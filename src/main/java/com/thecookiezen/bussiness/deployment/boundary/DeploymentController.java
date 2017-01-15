@@ -1,9 +1,7 @@
 package com.thecookiezen.bussiness.deployment.boundary;
 
-import com.google.common.collect.Iterables;
+import com.thecookiezen.bussiness.cluster.boundary.ClusterFetcher;
 import com.thecookiezen.bussiness.cluster.boundary.ContainerFetcher;
-import com.thecookiezen.infrastructure.docker.DockerClusterInstance;
-import com.thecookiezen.bussiness.cluster.entity.Cluster;
 import com.thecookiezen.bussiness.deployment.entity.DeploymentUnit;
 import com.thecookiezen.bussiness.jobs.entity.Job;
 
@@ -15,17 +13,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DeploymentController {
 
-    private final Cluster cluster;
-
     private final Iterator<ContainerFetcher> roundRobinNodes;
 
     private final Map<Long, DeploymentUnit> runningDeployments = new ConcurrentHashMap<>();
 
     private final Collection<Job> pendingJobs = new PriorityQueue<>();
 
-    public DeploymentController(DockerClusterInstance clusterInstance) {
-        this.cluster = clusterInstance.getCluster();
-        this.roundRobinNodes = Iterables.cycle(clusterInstance.getNodes().values()).iterator();
+    public DeploymentController(ClusterFetcher clusterInstance) {
+        this.roundRobinNodes = clusterInstance.roundRobinHosts();
     }
 
     public void deploy(Job job) {
