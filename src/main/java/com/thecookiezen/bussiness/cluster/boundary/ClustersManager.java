@@ -1,6 +1,6 @@
 package com.thecookiezen.bussiness.cluster.boundary;
 
-import com.thecookiezen.bussiness.cluster.control.ClusterInstance;
+import com.thecookiezen.infrastructure.docker.DockerClusterInstance;
 import com.thecookiezen.bussiness.cluster.control.ClusterRepository;
 import com.thecookiezen.bussiness.cluster.entity.Cluster;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +20,11 @@ public class ClustersManager {
 
     private final ClusterRepository clusterRepository;
 
-    private Map<Long, ClusterInstance> instances = new ConcurrentHashMap<>();
+    private Map<Long, ClusterFetcher> instances = new ConcurrentHashMap<>();
 
     @PostConstruct
     private void onInit() {
-        clusterRepository.getAll().forEach(cluster -> instances.put(cluster.getId(), new ClusterInstance(cluster)));
+        clusterRepository.getAll().forEach(cluster -> instances.put(cluster.getId(), new DockerClusterInstance(cluster)));
     }
 
     public Collection<Cluster> clustersList() {
@@ -35,7 +35,7 @@ public class ClustersManager {
         return clusterRepository.getById(clusterId);
     }
 
-    public ClusterInstance getInstance(long clusterId) {
+    public ClusterFetcher getInstance(long clusterId) {
         return instances.get(clusterId);
     }
 
@@ -46,11 +46,11 @@ public class ClustersManager {
 
     public void save(Cluster cluster) {
         clusterRepository.save(cluster);
-        instances.compute(cluster.getId(), (k, v) -> new ClusterInstance(clusterRepository.getById(k).get()));
+        instances.compute(cluster.getId(), (k, v) -> new DockerClusterInstance(clusterRepository.getById(k).get()));
     }
 
     @PreDestroy
     private void cleanup() {
-        instances.values().forEach(ClusterInstance::stop);
+        instances.values().forEach(ClusterFetcher::stop);
     }
 }

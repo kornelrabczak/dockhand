@@ -2,7 +2,7 @@ package com.thecookiezen.bussiness.deployment.boundary;
 
 import com.google.common.collect.Iterables;
 import com.thecookiezen.bussiness.cluster.boundary.ContainerFetcher;
-import com.thecookiezen.bussiness.cluster.control.ClusterInstance;
+import com.thecookiezen.infrastructure.docker.DockerClusterInstance;
 import com.thecookiezen.bussiness.cluster.entity.Cluster;
 import com.thecookiezen.bussiness.deployment.entity.DeploymentUnit;
 import com.thecookiezen.bussiness.jobs.entity.Job;
@@ -23,7 +23,7 @@ public class DeploymentController {
 
     private final Collection<Job> pendingJobs = new PriorityQueue<>();
 
-    public DeploymentController(ClusterInstance clusterInstance) {
+    public DeploymentController(DockerClusterInstance clusterInstance) {
         this.cluster = clusterInstance.getCluster();
         this.roundRobinNodes = Iterables.cycle(clusterInstance.getNodes().values()).iterator();
     }

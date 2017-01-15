@@ -1,8 +1,8 @@
 package com.thecookiezen.presentation;
 
+import com.thecookiezen.bussiness.cluster.boundary.ClusterFetcher;
 import com.thecookiezen.bussiness.cluster.boundary.ClustersManager;
 import com.thecookiezen.bussiness.cluster.boundary.ContainerFetcher;
-import com.thecookiezen.bussiness.cluster.control.ClusterInstance;
 import com.thecookiezen.presentation.streaming.LogsSSEListener;
 import com.thecookiezen.presentation.streaming.StatisticsSSEListener;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ public class ContainerController {
 
     @RequestMapping("/cluster/{clusterId}/node/{nodeId}/container/{containerId}/logs")
     public SseEmitter subscribeOnLogs(@PathVariable long clusterId, @PathVariable long nodeId, @PathVariable String containerId) {
-        ClusterInstance instance = clustersManager.getInstance(clusterId);
+        ClusterFetcher instance = clustersManager.getInstance(clusterId);
         ContainerFetcher node = instance.getNode(nodeId);
         logsSSEListenerMap.putIfAbsent(containerId, new LogsSSEListener(containerId, node));
         return logsSSEListenerMap.get(containerId).createNewEmiter();
@@ -38,7 +38,7 @@ public class ContainerController {
 
     @RequestMapping("/cluster/{clusterId}/node/{nodeId}/container/{containerId}/statistics")
     public SseEmitter subscribeOnStatistics(@PathVariable long clusterId, @PathVariable long nodeId, @PathVariable String containerId) {
-        ClusterInstance instance = clustersManager.getInstance(clusterId);
+        ClusterFetcher instance = clustersManager.getInstance(clusterId);
         ContainerFetcher node = instance.getNode(nodeId);
         statisticsSSEListenerMap.putIfAbsent(containerId, new StatisticsSSEListener(containerId, node));
         return statisticsSSEListenerMap.get(containerId).createNewEmiter();
@@ -47,8 +47,8 @@ public class ContainerController {
     @RequestMapping("/cluster/{clusterId}/node/{nodeId}/container/{containerId}")
     public String node(@PathVariable("clusterId") long clusterId, @PathVariable("nodeId") long nodeId,
                        @PathVariable("containerId") String containerId, Model model) {
-        ClusterInstance instance = clustersManager.getInstance(clusterId);
-        ContainerFetcher nodeInstance = instance.getNodes().get(nodeId);
+        ClusterFetcher instance = clustersManager.getInstance(clusterId);
+        ContainerFetcher nodeInstance = instance.getNode(nodeId);
         model.addAttribute("clusterId", clusterId);
         model.addAttribute("node", nodeInstance);
         model.addAttribute("container", nodeInstance.getContainer(containerId));

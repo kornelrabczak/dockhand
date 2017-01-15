@@ -1,13 +1,13 @@
-package com.thecookiezen.bussiness.cluster.control;
+package com.thecookiezen.infrastructure.docker;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.DockerCmdExecFactory;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.jaxrs.JerseyDockerCmdExecFactory;
+import com.thecookiezen.bussiness.cluster.boundary.ClusterFetcher;
 import com.thecookiezen.bussiness.cluster.boundary.ContainerFetcher;
 import com.thecookiezen.bussiness.cluster.entity.Cluster;
-import com.thecookiezen.infrastructure.docker.NodeInstance;
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
 
@@ -16,13 +16,13 @@ import java.util.Map;
 
 @Data
 @Log4j
-public class ClusterInstance {
+public class DockerClusterInstance implements ClusterFetcher {
 
     private final Cluster cluster;
 
     private Map<Long, ContainerFetcher> nodes = new HashMap<>();
 
-    public ClusterInstance(Cluster cluster) {
+    public DockerClusterInstance(Cluster cluster) {
         this.cluster = cluster;
         cluster.getHosts().forEach(h -> {
             DockerClient dockerClient = getDockerClient(h.getDockerDaemonUrl(), cluster.getDockerApiVersion());
@@ -30,7 +30,8 @@ public class ClusterInstance {
         });
     }
 
-    public Object getName() {
+    @Override
+    public String getName() {
         return cluster.getName();
     }
 
@@ -49,10 +50,12 @@ public class ClusterInstance {
                 .build();
     }
 
+    @Override
     public void stop() {
         nodes.values().forEach(ContainerFetcher::close);
     }
 
+    @Override
     public ContainerFetcher getNode(long nodeId) {
         return nodes.get(nodeId);
     }
