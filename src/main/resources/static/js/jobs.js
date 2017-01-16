@@ -94,32 +94,17 @@ $(function() {
             addMetadata: function() {
                 this.job.metadata.push({key:"", value:""});
             },
-            removeMetadata: function(index){
-                this.job.metadata.splice(index, 1);
-            },
             addTask() {
                 this.job.tasks.push(Vue.util.extend({}, emptyTask));
-            },
-            removeTask(index) {
-                this.job.tasks.splice(index, 1);
             },
             addPort(taskIndex) {
                 this.job.tasks[taskIndex].ports.push({});
             },
-            removePort(taskIndex, portIndex) {
-                this.job.tasks[taskIndex].ports.splice(portIndex, 1);
-            },
             addEnv(taskIndex) {
                 this.job.tasks[taskIndex].envs.push({});
             },
-            removeEnv(taskIndex, envIndex) {
-                this.job.tasks[taskIndex].envs.splice(envIndex, 1);
-            },
             addVolume(taskIndex) {
                 this.job.tasks[taskIndex].volumes.push({});
-            },
-            removeVolume(taskIndex, volumeIndex) {
-                this.job.tasks[taskIndex].volumes.splice(volumeIndex, 1);
             }
         }
     });

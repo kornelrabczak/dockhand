@@ -40,7 +40,7 @@
                                 </div>
                                 <div class="input-group col-md-1">
                                     <span class="input-group">
-                                        <button class="btn btn-default" type="button" v-on:click="removeMetadata(index)">
+                                        <button class="btn btn-default" type="button" v-on:click="job.metadata.splice(index, 1)">
                                           <i class="fa fa-minus" aria-hidden="true"></i>
                                         </button>
                                       </span>
@@ -114,7 +114,7 @@
                                                 </div>
                                                 <div class="input-group col-md-1">
                                                     <span class="input-group">
-                                                        <button class="btn btn-default" type="button" v-on:click="removePort(index, portIndex)">
+                                                        <button class="btn btn-default" type="button" v-on:click="task.ports.splice(portIndex, 1)">
                                                          <i class="fa fa-minus" aria-hidden="true"></i>
                                                         </button>
                                                     </span>
@@ -142,7 +142,7 @@
                                                 </div>
                                                 <div class="input-group col-md-1">
                                                     <span class="input-group">
-                                                        <button class="btn btn-default" type="button" v-on:click="removeEnv(index, envIndex)">
+                                                        <button class="btn btn-default" type="button" v-on:click="task.envs.splice(envIndex, 1)">
                                                          <i class="fa fa-minus" aria-hidden="true"></i>
                                                         </button>
                                                     </span>
@@ -176,7 +176,7 @@
                                                 </div>
                                                 <div class="input-group col-md-1">
                                                     <span class="input-group">
-                                                        <button class="btn btn-default" type="button" v-on:click="removeVolume(index, volumeIndex)">
+                                                        <button class="btn btn-default" type="button" v-on:click="task.volumes.splice(volumeIndex, 1)">
                                                          <i class="fa fa-minus" aria-hidden="true"></i>
                                                         </button>
                                                     </span>
@@ -187,7 +187,7 @@
                                 </div>
 
                                 <div class="box-footer">
-                                    <button type="submit" class="btn btn-danger" v-on:click="removeTask(index)">Remove</button>
+                                    <button type="submit" class="btn btn-danger" v-on:click="job.tasks.splice(index, 1)">Remove</button>
                                 </div>
                             </div>
                         </div>
